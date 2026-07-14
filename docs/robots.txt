@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mesquita1991.github.io/threshold-carry-exhaustion/sitemap.xml
