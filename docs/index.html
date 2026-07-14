@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Threshold Carry Events — Certified Exhaustion</title>
+  <meta name="description" content="A reproducible computer-assisted theorem on singularities of threshold carry Hoeffding matrices for every base q ≥ 2, every threshold, and 4 ≤ r ≤ 32.">
+  <meta name="author" content="Vinicius Pereira de Mesquita">
+  <meta name="theme-color" content="#0b1020">
+  <link rel="canonical" href="https://mesquita1991.github.io/threshold-carry-exhaustion/">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./site.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Threshold Carry Events — Certified Exhaustion">
+  <meta property="og:description" content="Exact residual-determinant reduction and certified exhaustion for four to thirty-two summands.">
+  <meta property="og:url" content="https://mesquita1991.github.io/threshold-carry-exhaustion/">
+  <meta property="og:image" content="https://mesquita1991.github.io/threshold-carry-exhaustion/social-card.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands",
+    "author": {"@type": "Person", "name": "Vinicius Pereira de Mesquita"},
+    "datePublished": "2026-07-14",
+    "version": "1.0.0",
+    "url": "https://mesquita1991.github.io/threshold-carry-exhaustion/",
+    "codeRepository": "https://github.com/mesquita1991/threshold-carry-exhaustion",
+    "isAccessibleForFree": true,
+    "keywords": ["Hoeffding decomposition", "carry events", "structured matrices", "computer-assisted proof", "residual determinants"]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="nav-wrap">
+      <a class="brand" href="#top" aria-label="Threshold Carry Events home">
+        <span class="brand-mark" aria-hidden="true">Σ</span>
+        <span><strong>Threshold Carry Events</strong><small>Certified exhaustion package</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#result">Result</a>
+        <a href="#architecture">Proof</a>
+        <a href="#verification">Verification</a>
+        <a href="#reproduce">Reproduce</a>
+        <a href="#limits">Limits</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle color theme">
+          <span class="theme-icon" aria-hidden="true">◐</span>
+        </button>
+        <a class="button button-small button-ghost" href="https://github.com/mesquita1991/threshold-carry-exhaustion" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> Exact computer-assisted theorem · release v1.0.0</p>
+        <h1>Certified exhaustion of singularities in threshold carry Hoeffding matrices</h1>
+        <p class="hero-lede">
+          An exact reduction from a probabilistic interaction matrix to integer residual determinants,
+          followed by independently checkable finite-field and symbolic certificates.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/download/v1.0.0/Threshold_Carry_Events_Certified_Exhaustion.pdf">Read the paper</a>
+          <a class="button button-secondary" href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0">Open verified release</a>
+        </div>
+        <ul class="trust-row" aria-label="Project properties">
+          <li>Exact arithmetic</li>
+          <li>Independent checker</li>
+          <li>One-command reproduction</li>
+          <li>Frozen release</li>
+        </ul>
+      </div>
+
+      <aside class="theorem-card" aria-labelledby="theorem-title">
+        <div class="card-kicker">Main theorem</div>
+        <h2 id="theorem-title">Exhaustion for 4 ≤ r ≤ 32</h2>
+        <p>For every base <em>q</em> ≥ 2 and every integer threshold <em>t</em>, singularity occurs exactly in the known structural families:</p>
+        <div class="formula-block" role="img" aria-label="Singular if and only if boundary, carry band, or self-dual">
+          <span>singular</span>
+          <strong>⇔</strong>
+          <span>boundary ∪ carry bands ∪ self-dual</span>
+        </div>
+        <p class="card-note">No floating-point arithmetic is used in the certification.</p>
+      </aside>
+    </section>
+
+    <section class="quick-links section-shell" aria-label="Quick access">
+      <a class="quick-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/blob/main/paper/threshold_carry_exhaustion.tex">
+        <span class="quick-icon">01</span><span><strong>Paper source</strong><small>Read the complete LaTeX manuscript</small></span><span>→</span>
+      </a>
+      <a class="quick-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/certificates">
+        <span class="quick-icon">02</span><span><strong>Certificates</strong><small>Inspect the frozen no-root archive</small></span><span>→</span>
+      </a>
+      <a class="quick-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/independent_checker">
+        <span class="quick-icon">03</span><span><strong>Independent checker</strong><small>Review the separate verification routes</small></span><span>→</span>
+      </a>
+    </section>
+
+    <section class="content-section section-shell" id="result">
+      <div class="section-heading">
+        <p class="eyebrow">The mathematical statement</p>
+        <h2>One precise result, with explicit scope</h2>
+        <p>The work classifies singularity for a finite but nontrivial range of summand counts, uniformly in the base and threshold.</p>
+      </div>
+      <div class="two-column">
+        <article class="prose-card">
+          <h3>Object of study</h3>
+          <p>Let <span class="math">B<sub>q,r,t</sub></span> be the reduced matrix of the second-order Hoeffding interaction associated with the event that the sum of <em>r</em> independent uniform base-<em>q</em> digits is at least <em>t</em>.</p>
+          <p>The classification problem asks for all parameters for which this structured matrix is singular.</p>
+        </article>
+        <article class="prose-card accent-card">
+          <h3>Certified conclusion</h3>
+          <p>For every <span class="math">q ≥ 2</span>, every integer <span class="math">t</span>, and every <span class="math">4 ≤ r ≤ 32</span>, the known boundary, carry-band, and self-dual families exhaust all singularities.</p>
+          <p>The statement is exact and computer-assisted, not numerical.</p>
+        </article>
+      </div>
+      <div class="insight-strip">
+        <span class="insight-label">General mechanism</span>
+        <p>For each fixed residual degree, the infinite problem in the base <em>q</em> reduces to finitely many exact integer computations.</p>
+      </div>
+    </section>
+
+    <section class="content-section section-shell" id="architecture">
+      <div class="section-heading">
+        <p class="eyebrow">Proof architecture</p>
+        <h2>From probability to a certified integer determinant</h2>
+        <p>Every arrow is proved with explicit bases, dimensions, permutations, and nonzero scalar factors.</p>
+      </div>
+
+      <div class="pipeline" aria-label="Proof reduction pipeline">
+        <article class="pipeline-node">
+          <span class="node-symbol">B</span>
+          <div><h3>Hoeffding matrix</h3><p>Original reduced interaction matrix.</p></div>
+        </article>
+        <span class="pipeline-arrow" aria-hidden="true">→</span>
+        <article class="pipeline-node">
+          <span class="node-symbol">F</span>
+          <div><h3>Confluent–Fourier form</h3><p>Structured spectral reduction.</p></div>
+        </article>
+        <span class="pipeline-arrow" aria-hidden="true">→</span>
+        <article class="pipeline-node">
+          <span class="node-symbol">R</span>
+          <div><h3>Residual matrix</h3><p>Interpolation defect isolated.</p></div>
+        </article>
+        <span class="pipeline-arrow" aria-hidden="true">→</span>
+        <article class="pipeline-node">
+          <span class="node-symbol">A</span>
+          <div><h3>Coefficient map</h3><p>Polynomial basis representation.</p></div>
+        </article>
+        <span class="pipeline-arrow" aria-hidden="true">→</span>
+        <article class="pipeline-node final-node">
+          <span class="node-symbol">D</span>
+          <div><h3>Integer polynomial</h3><p><span class="math">D<sub>n,p,a₀</sub>(q)</span>, certified exactly.</p></div>
+        </article>
+      </div>
+
+      <div class="method-grid">
+        <article><span class="method-number">1</span><h3>Structural reduction</h3><p>Determinants are related through exact nonzero factors, so singularity is preserved.</p></article>
+        <article><span class="method-number">2</span><h3>Stable regime</h3><p>For <span class="math">q ≥ n+1</span>, residual determinants become integer polynomials in <em>q</em>.</p></article>
+        <article><span class="method-number">3</span><h3>Finite-field certificates</h3><p>A prime is chosen for each family so that the reduced polynomial has no admissible root.</p></article>
+        <article><span class="method-number">4</span><h3>Unstable regime</h3><p>The remaining finite parameter domain is audited directly using two independent entry constructions.</p></article>
+      </div>
+    </section>
+
+    <section class="content-section section-shell" id="verification">
+      <div class="section-heading">
+        <p class="eyebrow">Exact verification coverage</p>
+        <h2>A finite audit with explicit counts</h2>
+        <p>The released software reconstructs the theorem's finite obligations from the source definitions.</p>
+      </div>
+      <div class="stats-grid">
+        <article class="stat-card"><strong>8,112</strong><span>stable mixed families</span></article>
+        <article class="stat-card"><strong>8,110</strong><span>finite-field no-root certificates</span></article>
+        <article class="stat-card"><strong>2</strong><span>symbolic exceptional factorizations</span></article>
+        <article class="stat-card"><strong>112,375</strong><span>unstable nonconstant triples</span></article>
+        <article class="stat-card"><strong>8,225</strong><span>predicted singular triples</span></article>
+        <article class="stat-card"><strong>104,150</strong><span>certified nonsingular triples</span></article>
+      </div>
+      <div class="verification-note">
+        <div class="verification-badge">✓</div>
+        <div>
+          <h3>Clean-room GitHub Actions verification passed</h3>
+          <p>The main commit, frozen tag, and release-asset workflow all completed successfully in fresh hosted environments.</p>
+          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/actions" target="_blank" rel="noopener">Inspect workflow history ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section section-shell" id="reproduce">
+      <div class="section-heading">
+        <p class="eyebrow">Reproducibility</p>
+        <h2>Rebuild and verify everything with one command</h2>
+        <p>The command compiles the independent checkers, regenerates certificates and tables, runs exact audits, rebuilds the paper, and verifies the integrity manifest.</p>
+      </div>
+      <div class="terminal-card">
+        <div class="terminal-bar"><span></span><span></span><span></span><small>GNU/Linux shell</small></div>
+        <pre><code id="reproduction-command">git clone https://github.com/mesquita1991/threshold-carry-exhaustion.git
+cd threshold-carry-exhaustion
+bash ./run_all.sh</code></pre>
+        <button class="copy-button" type="button" data-copy-target="reproduction-command">Copy command</button>
+      </div>
+      <div class="review-path">
+        <article>
+          <span>For readers</span>
+          <h3>Start with the theorem and proof map</h3>
+          <p>Read the abstract, main theorem, reduction theorem, and scientific limitations.</p>
+          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/download/v1.0.0/Threshold_Carry_Events_Certified_Exhaustion.pdf">Open PDF</a>
+        </article>
+        <article>
+          <span>For referees</span>
+          <h3>Audit the logical bridge</h3>
+          <p>Check the exact chain <span class="math">B ↔ R ↔ A ↔ D</span> and compare it with the independent checker.</p>
+          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/independent_checker">Open checker</a>
+        </article>
+        <article>
+          <span>For reproducibility reviewers</span>
+          <h3>Run the frozen release</h3>
+          <p>Use tag <code>v1.0.0</code>, execute the full workflow, and compare the generated counts.</p>
+          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0">Open release</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section section-shell" id="repository-map">
+      <div class="section-heading">
+        <p class="eyebrow">Repository map</p>
+        <h2>Find the relevant object without browsing blindly</h2>
+      </div>
+      <div class="repo-map">
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/paper"><code>paper/</code><span>LaTeX manuscript and generated table</span></a>
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/src"><code>src/</code><span>certificate and table generators</span></a>
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/certificates"><code>certificates/</code><span>frozen stable no-root archive</span></a>
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/independent_checker"><code>independent_checker/</code><span>separate stable, unstable, and symbolic audits</span></a>
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/tests"><code>tests/</code><span>small-case and coverage regressions</span></a>
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/blob/main/MANIFEST.sha256"><code>MANIFEST.sha256</code><span>integrity manifest</span></a>
+      </div>
+    </section>
+
+    <section class="content-section section-shell" id="limits">
+      <div class="section-heading">
+        <p class="eyebrow">Scientific limits</p>
+        <h2>What this release does not claim</h2>
+        <p>The boundaries below are part of the theorem statement, not caveats hidden in supplementary material.</p>
+      </div>
+      <div class="limits-grid">
+        <article><span>Not claimed</span><h3>Arbitrary numbers of summands</h3><p>The exhaustion theorem is certified for <span class="math">4 ≤ r ≤ 32</span>, not for all <em>r</em>.</p></article>
+        <article><span>Not claimed</span><h3>Uniform nonvanishing in every residual degree</h3><p>Finite decidability is proved degree by degree; a universal product formula remains open.</p></article>
+        <article><span>Not claimed</span><h3>Deep self-dual corank classification</h3><p>The unresolved deep self-dual rank problem is deliberately excluded from this paper.</p></article>
+        <article><span>Not claimed</span><h3>Parameter-only global inertia formula</h3><p>The release concerns singularity exhaustion, not a complete regional inertia classification.</p></article>
+      </div>
+    </section>
+
+    <section class="content-section section-shell" id="cite">
+      <div class="citation-card">
+        <div>
+          <p class="eyebrow">Citation</p>
+          <h2>Cite the frozen release</h2>
+          <p>The repository includes machine-readable citation metadata in <code>CITATION.cff</code>.</p>
+        </div>
+        <div class="citation-code">
+          <pre><code id="citation-text">Mesquita, V. P. (2026). Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands (Version 1.0.0). GitHub.</code></pre>
+          <button class="copy-button" type="button" data-copy-target="citation-text">Copy citation</button>
+        </div>
+        <a class="button button-secondary" href="https://github.com/mesquita1991/threshold-carry-exhaustion/blob/main/CITATION.cff">View CITATION.cff</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-shell footer-inner">
+      <div><strong>Threshold Carry Events</strong><p>Exact mathematics, explicit scope, reproducible verification.</p></div>
+      <div class="footer-links">
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion">Repository</a>
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0">Release</a>
+        <a href="#cite">Citation</a>
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <noscript><div class="noscript">This page works without JavaScript. Theme switching and copy buttons require JavaScript.</div></noscript>
+  <script src="./script.js" defer></script>
+</body>
+</html>
