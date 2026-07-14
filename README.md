@@ -31,6 +31,7 @@ Requirements:
 - Python 3.11+;
 - SymPy 1.14;
 - `pdflatex` and an AMS LaTeX installation;
+- Poppler utilities (`pdftotext`, `pdfinfo`);
 - `sha256sum`.
 
 Run:
@@ -47,13 +48,17 @@ The command:
 4. reconstructs and checks every unstable parameter by two matrix-entry routes;
 5. runs exact symbolic regression checks and archive-coverage tests;
 6. regenerates the computational table used in the paper;
-7. rebuilds the PDF reproducibly and verifies its frozen SHA-256 digest;
+7. rebuilds the PDF, verifies its 20-page structure, and checks a frozen SHA-256 digest of its normalized extracted text;
 8. verifies `MANIFEST.sha256`.
+
+### PDF reproducibility note
+
+PDF object streams, producer metadata, and embedded font subsets can differ across TeX Live releases even when the typeset mathematics is unchanged. The verification command therefore checks the page count and a normalized text extraction hash. The tagged release separately publishes the exact PDF asset and its byte-level SHA-256 checksum.
 
 ## Repository structure
 
 ```text
-paper/                 LaTeX source, generated table, and frozen PDF digest
+paper/                 LaTeX source, generated table, and frozen rendered-text digest
 src/                   certificate generator and table generator
 certificates/          frozen stable no-root certificate archive
 independent_checker/   independent finite-field, unstable, and symbolic checkers

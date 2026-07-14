@@ -13,7 +13,7 @@ trap 'rm -rf "$PAPER_TMP"' EXIT
 rm -rf "$BUILD"
 mkdir -p "$BIN" "$LOGS" "$CERTS" "$PAPER_BUILD/generated" "$PAPER_TMP/generated"
 
-for cmd in g++ python3 pdflatex sha256sum cmp timeout; do
+for cmd in g++ python3 pdflatex pdftotext pdfinfo sha256sum cmp timeout; do
   command -v "$cmd" >/dev/null || { echo "missing required command: $cmd" >&2; exit 2; }
 done
 
@@ -35,9 +35,22 @@ cp "$ROOT/paper/generated/computational_counts.tex" "$PAPER_TMP/generated/"
 )
 cp "$PAPER_TMP/pdflatex.stdout.log" "$LOGS/pdflatex.log"
 cp "$PAPER_TMP/threshold_carry_exhaustion.pdf" "$PAPER_BUILD/"
+
+# PDF object streams and embedded font subsets vary across TeX Live releases.
+# We therefore verify the invariant rendered content rather than requiring
+# byte-identical PDF containers across installations.
+pages="$(pdfinfo "$PAPER_BUILD/threshold_carry_exhaustion.pdf" \
+  | awk '/^Pages:/ {print $2}')"
+[[ "$pages" == "20" ]] || {
+  echo "unexpected paper length: $pages pages (expected 20)" >&2
+  exit 1
+}
+pdftotext -layout "$PAPER_BUILD/threshold_carry_exhaustion.pdf" - \
+  | sed 's/[[:space:]]\+$//' \
+  > "$PAPER_BUILD/threshold_carry_exhaustion.txt"
 (
   cd "$PAPER_BUILD"
-  sha256sum -c "$ROOT/paper/threshold_carry_exhaustion.pdf.sha256"
+  sha256sum -c "$ROOT/paper/threshold_carry_exhaustion.txt.sha256"
 )
 
 CXX="${CXX:-g++}"
