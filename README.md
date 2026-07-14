@@ -37,7 +37,7 @@ Requirements:
 Run:
 
 ```bash
-./run_all.sh
+bash ./run_all.sh
 ```
 
 The command:

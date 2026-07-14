@@ -17,4 +17,4 @@ jobs:
           sudo apt-get install -y g++ python3-pip texlive-latex-extra texlive-fonts-recommended lmodern poppler-utils
           python3 -m pip install --break-system-packages -r requirements.txt
       - name: Run exact verification
-        run: ./run_all.sh
+        run: bash ./run_all.sh
