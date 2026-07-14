@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this paper or verification package, please cite the article and the archived release."
+title: "Threshold Carry Events: Reproducible Proof Package"
+type: software
+authors:
+  - family-names: "Pereira de Mesquita"
+    given-names: "Vinicius"
+version: "1.0.0"
+date-released: "2026-07-14"
+repository-code: "https://github.com/mesquita1991/threshold-carry-exhaustion"
+url: "https://github.com/mesquita1991/threshold-carry-exhaustion"
+keywords:
+  - carry events
+  - Hoeffding decomposition
+  - residual determinants
+  - computer-assisted proof
+  - exact certification
+preferred-citation:
+  type: article
+  title: "Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands"
+  authors:
+    - family-names: "Pereira de Mesquita"
+      given-names: "Vinicius"
+  year: 2026

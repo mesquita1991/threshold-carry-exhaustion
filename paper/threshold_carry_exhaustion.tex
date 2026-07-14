@@ -1,0 +1,909 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{mathtools,amssymb,amsfonts}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\ifdefined\pdfinfoomitdate\pdfinfoomitdate=1\fi
+\ifdefined\pdftrailerid\pdftrailerid{}\fi
+\ifdefined\pdfsuppressptexinfo\pdfsuppressptexinfo=15\fi
+
+\setlist[enumerate]{leftmargin=2.2em,itemsep=2pt,topsep=4pt}
+\setlist[itemize]{leftmargin=2.0em,itemsep=2pt,topsep=4pt}
+\renewcommand{\arraystretch}{1.12}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\F}{\mathbb F}
+\newcommand{\cB}{\widehat B}
+\newcommand{\In}{\operatorname{In}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\corank}{\operatorname{corank}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\PP}{\mathcal P}
+\newcommand{\Bands}{\mathcal B}
+\newcommand{\Sing}{\mathcal S}
+\newcommand{\Delt}{\mathit\Delta}
+\newcommand{\1}{\mathbf 1}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{mainthm}{Main Theorem}
+
+\title[Certified Exhaustion of Threshold Carry Events]{Threshold Carry Events:\\Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands}
+\author{Vinicius Pereira de Mesquita}
+\address{Independent researcher, Brazil}
+\email{mesquita1991@gmail.com}
+\date{Reproducible release, 14 July 2026}
+
+\hypersetup{
+ pdftitle={Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands},
+ pdfauthor={Vinicius Pereira de Mesquita},
+ pdfsubject={Hoeffding carry-event matrices, residual determinants, and computer-assisted exhaustion},
+ pdfkeywords={carry events, Hoeffding decomposition, residual determinants, Toeplitz-Pade minors, computer-assisted proof}
+}
+
+\subjclass[2020]{Primary 15A15, 15B05; Secondary 05A10, 11A63, 60C05, 65F99}
+\keywords{carry events, Hoeffding decomposition, structured matrices, residual determinants, Toeplitz--Pad\'e minors, computer-assisted proof, exact certification}
+
+\begin{document}
+
+\begin{abstract}
+Let $X_1,\ldots,X_r$ be independent uniform digits in $\{0,\ldots,q-1\}$ and let $B_{q,r,t}$ be the reduced matrix of the second-order Hoeffding interaction of the threshold event $\mathbf 1_{\{X_1+\cdots+X_r\ge t\}}$. We classify the singularities of this matrix for every base $q\ge2$, every threshold, and $4\le r\le32$. The proof first isolates boundary ranges, explicit carry bands, and self-dual thresholds. Every remaining determinant is transformed, by a confluent bialternant and a normalized discrete Fourier decomposition, into a real residual interpolation determinant. In the stable regime $q\ge n+1$, where $n=r-2$, the residual determinant is identified up to an explicit nonzero factor with an integer polynomial determinant $D_{n,p,a_0}(q)$ and then with a rectangular Toeplitz minor of a truncated connection jet. Its constant term is an explicit Vandermonde product, which implies finite decidability for every fixed $n$. A frozen archive of $8{,}110$ finite-field no-root certificates, together with two symbolic factorizations, resolves all stable mixed families for $2\le n\le30$. An independent direct audit reconstructs all $112{,}375$ unstable parameter triples by two entry formulas and certifies the remaining $104{,}150$ nonsingular matrices. Consequently the exhaustion conjecture holds for all bases and thresholds when $4\le r\le32$. The theorem is computer-assisted but exact: all production checks use integer, rational, or finite-field arithmetic, and the source, certificates, independent checkers, tests, and integrity manifest are released together. No claim is made for arbitrary $r$.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+Carries arising from positional addition have a classical probabilistic and combinatorial theory. Kummer's theorem relates base-$p$ carries to $p$-adic valuations of binomial coefficients, while Holte's carry matrix and subsequent work connect random carry chains to shuffling, symmetric functions, and one-dependent processes \cite{Holte,DiaconisFulman,BorodinDiaconisFulman}. The object studied here is different. We fix every input simultaneously and apply the Hoeffding, or functional ANOVA, decomposition to a single threshold indicator on the full digit cube.
+
+Fix integers $q\ge2$, $r\ge2$, and $t\in\Z$, and define
+\[
+ F_{q,r,t}(x_1,\ldots,x_r)=\mathbf 1_{\{x_1+\cdots+x_r\ge t\}},
+ \qquad 0\le x_i<q.
+\]
+The pure second-order Hoeffding interaction associated with two coordinates is a centered symmetric $q\times q$ matrix. Passing to first-difference coordinates removes the constant direction and gives a symmetric matrix $B_{q,r,t}$ of order $N=q-1$. The central problem is to determine exactly when this reduced matrix is singular.
+
+Three families are forced by explicit structure: strict boundary ranges, carry bands, and self-dual thresholds. The \emph{exhaustion conjecture} asserts that no other singularities occur. The main result of this paper proves the conjecture through residual degree thirty.
+
+\begin{mainthm}
+For every $q\ge2$, every integer threshold $t$, and every
+\[
+ 4\le r\le32,
+\]
+the reduced matrix $B_{q,r,t}$ is singular if and only if $t$ belongs to a strict boundary range, an explicit carry band, or the self-dual family. Equivalently, the exhaustion conjecture holds for all bases and thresholds when $2\le n=r-2\le30$.
+\end{mainthm}
+
+The proof has a symbolic layer and a finite exact layer. Symbolically, the determinant of $B_{q,r,t}$ is reduced to a smaller interpolation determinant $R_{q,n,t}$, then to the coefficient determinant of a polynomial map, and in the stable range to a family $D_{n,p,a_0}(q)\in\Z[q]$. A translation-module model identifies $D$ with a rectangular Toeplitz--Pad\'e minor. Its nonzero constant term implies that, for each fixed $n$, only finitely many integer bases can be roots. Computationally, all stable families through $n=30$ are excluded by modular no-root certificates or symbolic factorization, while the finite unstable range is checked directly.
+
+The proof is computer-assisted in a narrow and auditable sense. The mathematical reductions, dimension counts, and determinant factors are proved symbolically. The certificate archive is part of the proof, and the independent verifier reconstructs rather than trusts the stored determinant data. Floating-point arithmetic is not used.
+
+\subsection{Result map and logical status}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.19\textwidth}X@{}}
+\toprule
+Component & Status & Output \\
+\midrule
+Difference identity & Symbolic & Explicit integer Hankel-difference matrix $\cB=q^nB$.\\
+Known singular families & Symbolic & Exact boundaries, carry bands, and forced self-duality.\\
+Residual reduction & Symbolic & Exact chain $B\leftrightarrow R\leftrightarrow A$.\\
+Stable normal form & Symbolic & Exact bridge $A\leftrightarrow D_{n,p,a_0}(q)$.\\
+Arithmetic sieve & Symbolic & Explicit $D(0)$ and finite decision for fixed $n$.\\
+Stable range, $n\le30$ & Certificates plus symbolic exceptions & All stable residual determinants are nonzero.\\
+Unstable range, $n\le30$ & Finite exact audit & Every parameter $2\le q\le n\le30$ is resolved.\\
+Arbitrary residual degree & Open & Uniform nonvanishing of the Toeplitz--Pad\'e minors remains unproved.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Organization}
+\Cref{sec:matrix} defines the reduced Hoeffding matrix. \Cref{sec:known-singularities} records the singular families that are known before residual analysis. \Cref{sec:residual} gives the confluent--Fourier reduction and tracks the exact determinant factors. \Cref{sec:stable} derives the root-omission determinant $D_{n,p,a_0}(q)$. \Cref{sec:toeplitz} gives the translation-module and Toeplitz--Pad\'e form. \Cref{sec:decidability} proves finite decidability. \Cref{sec:certification} supplies the certificate theorem and the direct unstable audit. \Cref{sec:reproducibility} specifies the role of the released software and data. The final section states the precise limitations.
+
+\section{Hoeffding interactions and the reduced matrix}
+\label{sec:matrix}
+
+\subsection{Product-space projections}
+Let $\Omega_q=\{0,1,\ldots,q-1\}$ with the uniform measure. For $j\in[r]$, let $P_j$ denote averaging in the $j$th coordinate and put $H_j=I-P_j$. For a nonempty subset $S\subseteq[r]$, the pure Hoeffding component is
+\[
+ f_{S,t}=\left(\prod_{j\in S}H_j\right)\mathbb E[F_{q,r,t}\mid X_S].
+\]
+The projections commute, and $f_{S,t}$ has zero mean in every coordinate belonging to $S$ \cite{Hoeffding}.
+
+For a univariate function $u$ on $\Omega_q$, define the forward difference
+\[
+ (Du)(i)=u(i+1)-u(i),\qquad 0\le i\le q-2.
+\]
+For a sequence $a:\Z\to\R$, write $(\Delta a)(m)=a(m+1)-a(m)$. Let
+\[
+ p_{q,n}(m)=\Pr(Y_1+\cdots+Y_n=m),
+\]
+where the $Y_i$ are independent uniform digits, and extend $p_{q,n}$ by zero outside its support.
+
+\begin{theorem}[Mixed-difference identity]\label{thm:mixed-difference}
+If $S$ has cardinality $k\ge1$, then for $0\le i_\nu\le q-2$,
+\[
+ D_Sf_{S,t}(i_1,\ldots,i_k)
+ =(-1)^{k-1}\Delta^{k-1}p_{q,r-k}
+ \left(t-k-\sum_{\nu=1}^ki_\nu\right).
+\]
+Equivalently, with $Q_q(z)=1+z+\cdots+z^{q-1}$,
+\[
+ D_Sf_{S,t}(i_1,\ldots,i_k)
+ =\frac{(-1)^{k-1}}{q^{r-k}}
+ [z^{t-1-\sum i_\nu}](1-z)^{k-1}Q_q(z)^{r-k}.
+\]
+\end{theorem}
+
+\begin{proof}
+Let $n=r-k$ and $T_n(u)=\Pr(Y_1+\cdots+Y_n\ge u)$. The conditional expectation equals $T_n(t-\sum x_{j_\nu})$. Since $D_jP_j=0$, mixed coordinate differences pass through the centering projections. Expanding the $k$ differences gives $(-1)^k\Delta^kT_n$, and $\Delta T_n=-p_{q,n}$. The coefficient form follows from $p_{q,n}(m)=q^{-n}[z^m]Q_q(z)^n$ and the standard relation between forward differences and multiplication by $1-z$.
+\end{proof}
+
+\subsection{Difference coordinates}
+Let $M_{q,r,t}$ be the $q\times q$ matrix of the pure second-order component associated with the first two coordinates. Let $D_q$ be the $(q-1)\times q$ difference matrix with $-1,1$ in consecutive positions. Since $M_{q,r,t}\1=0$, define
+\[
+ B_{q,r,t}=D_qM_{q,r,t}D_q^{\mathsf T}.
+\]
+The transpose $D_q^{\mathsf T}$ is an isomorphism from $\R^{q-1}$ onto $\1^\perp$. Hence
+\begin{equation}\label{eq:inertia-transfer}
+ \rank M_{q,r,t}=\rank B_{q,r,t},\qquad
+ \In(M_{q,r,t})=(n_+(B),n_-(B),n_0(B)+1).
+\end{equation}
+
+Put
+\[
+ N=q-1,\qquad n=r-2,
+\]
+and define the integer digit-sum coefficients
+\[
+ c_{q,n}(u)=[z^u](1+z+\cdots+z^{q-1})^n,
+\]
+with $c_{q,n}(u)=0$ outside $0\le u\le nN$.
+
+\begin{proposition}[Scaled Hankel-difference matrix]\label{prop:B-formula}
+The positive scaling $\cB_{q,r,t}=q^nB_{q,r,t}$ satisfies
+\begin{equation}\label{eq:Bdef-main}
+ \cB_{q,r,t}(i,j)=c_{q,n}(t-2-i-j)-c_{q,n}(t-1-i-j),
+ \qquad 0\le i,j<N.
+\end{equation}
+Thus $B$ and $\cB$ have the same rank, corank, inertia, and signs of minors of a fixed order.
+\end{proposition}
+
+\begin{proof}
+Apply \cref{thm:mixed-difference} with $k=2$. The two coordinate differences of the second-order component equal the first difference of the distribution of the remaining $n$ digits. Multiplication by $q^n$ replaces probabilities by the integer coefficients $c_{q,n}$.
+\end{proof}
+
+\subsection{Complementary thresholds}
+Coordinate reflection $x\mapsto N-x$ gives
+\[
+ F_{q,r,t}(x)=1-F_{q,r,t^*}(N-x_1,\ldots,N-x_r),
+ \qquad t^*=rN-t+1.
+\]
+Let $R_N$ be the reversal matrix of order $N$.
+
+\begin{proposition}[Threshold duality]\label{prop:duality}
+For every $q,r,t$,
+\begin{equation}\label{eq:B-duality}
+ \cB_{q,r,t}=-R_N\cB_{q,r,t^*}R_N.
+\end{equation}
+Consequently complementary thresholds have the same nullity and opposite positive and negative inertia counts.
+\end{proposition}
+
+\begin{proof}
+The polynomial $Q_q(z)^n$ is palindromic of degree $nN$, so $c_{q,n}(u)=c_{q,n}(nN-u)$. Substitute $t^*=rN-t+1$ into \eqref{eq:Bdef-main} and reverse both indices.
+\end{proof}
+
+\section{Singularities known before residual analysis}
+\label{sec:known-singularities}
+
+\subsection{Boundary ranges}
+The nonconstant thresholds are $1\le t\le rN$. Strict lower and upper boundaries are
+\begin{equation}\label{eq:boundary-set-main}
+ \mathcal E_{q,r}=\{t:1\le t<N\}\cup\{t:1\le t^*<N\}.
+\end{equation}
+
+\begin{theorem}[Complete boundary ranges]\label{thm:boundary}
+If $1\le t\le N$, then $\rank M_{q,r,t}=t$ and
+\[
+ \In(M_{q,r,t})=\left(\left\lfloor\frac t2\right\rfloor,
+ \left\lceil\frac t2\right\rceil,q-t\right).
+\]
+The upper boundary is obtained by complementary-threshold duality. In particular, the reduced matrix is singular for the strict ranges in \eqref{eq:boundary-set-main}, while the endpoints $t=N$ and $t^*=N$ are nonsingular for $B$.
+\end{theorem}
+
+\begin{proof}
+For $1\le t\le N$, \eqref{eq:Bdef-main} is supported on the first $t$ rows and columns and has constant nonzero anti-diagonal. It is congruent to a signed reversal matrix of order $t$ direct-summed with a zero block. Transfer the result to $M$ by \eqref{eq:inertia-transfer}. The upper range follows from \cref{prop:duality}.
+\end{proof}
+
+\subsection{Carry bands}
+Assume $1\le n\le N$. Define
+\begin{equation}\label{eq:band-set-main}
+ \Bands_{q,n}=\{\ell q+a:1\le\ell\le n,\ 0\le a\le N-n\}.
+\end{equation}
+When $n>N$, set $\Bands_{q,n}=\varnothing$.
+
+\begin{theorem}[Exact singular carry bands]\label{thm:bands}
+Let $1\le n\le N$, write $t=\ell q+a$ with $1\le\ell\le n$ and $0\le a\le N-n$, and put $c=N-n-a$. Define
+\[
+ \alpha=(-1)^\ell\binom{n-1}{\ell-1},\qquad
+ \gamma=(-1)^{\ell+1}\binom n\ell,\qquad
+ \beta=(-1)^{\ell+N-a}\binom n{\ell-1}.
+\]
+Then
+\begin{equation}\label{eq:band-congruence}
+ \cB_{q,r,t}\sim \alpha R_{n-1}\oplus\gamma R_a\oplus[0]\oplus\beta R_c.
+\end{equation}
+Hence $\corank B_{q,r,t}=1$ and the original centered matrix has nullity two.
+\end{theorem}
+
+\begin{proof}
+Identify difference-coordinate vectors with polynomials in $\R[z]_{<N}$. The scaled bilinear form is
+\[
+ \langle U,V\rangle=-[z^{\ell q+a-1}]
+ \frac{(1-z^q)^n}{(1-z)^{n-1}}U(z)V(z).
+\]
+Let
+\begin{align*}
+ \mathcal U&=\{z^a(1-z)^j:0\le j\le n-2\},\\
+ \mathcal W&=\{z^u(1-z)^{n-1}:0\le u<a\},\\
+ \mathcal K&=\{z^a(1-z)^{n-1}\},\\
+ \mathcal V&=\{z^a(1-z)^{n+h}:0\le h<c\}.
+\end{align*}
+These families form a basis. The vector in $\mathcal K$ is radical. Expanding $(1-z^q)^n$ shows that all cross-pairings between the other three families vanish. Within each family the Gram block is anti-triangular: the anti-diagonal values are respectively $\alpha$, $\gamma$, and $\beta$. Since these scalars are nonzero, \eqref{eq:band-congruence} follows.
+\end{proof}
+
+\subsection{Self-duality}
+A self-dual threshold exists exactly when $q$ is even and $r$ is odd, in which case
+\begin{equation}\label{eq:t0-main}
+ t_0=\frac{rN+1}{2}.
+\end{equation}
+
+\begin{proposition}[Forced self-dual singularity]\label{prop:selfdual}
+At $t=t_0$, the reduced matrix is singular.
+\end{proposition}
+
+\begin{proof}
+Equation \eqref{eq:B-duality} becomes $\cB=-R_N\cB R_N$. Since $q$ is even, $N=q-1$ is odd. A symmetric matrix of odd order whose spectrum is invariant under $\lambda\mapsto-\lambda$ must have a zero eigenvalue.
+\end{proof}
+
+\begin{definition}[Predicted singular set]
+Set
+\begin{equation}\label{eq:predicted-main}
+ \Sing_{q,r}=\mathcal E_{q,r}\cup\Bands_{q,n}\cup
+ \begin{cases}
+ \{t_0\},&q\text{ even and }r\text{ odd},\\
+ \varnothing,&\text{otherwise}.
+ \end{cases}
+\end{equation}
+The exhaustion conjecture asserts that $B_{q,r,t}$ is singular exactly for $t\in\Sing_{q,r}$.
+\end{definition}
+
+\section{Confluent--Fourier residual reduction}
+\label{sec:residual}
+
+Put
+\[
+ m=nN+1.
+\]
+By boundary duality it suffices to study the residual interval
+\begin{equation}\label{eq:residual-interval}
+ N\le t\le N+m,
+ \qquad h=t-N.
+\end{equation}
+
+\subsection{Exponent model}
+Define
+\begin{equation}\label{eq:E-main}
+ E=\{0,1,\ldots,m-h-1\}\cup
+ \{m-h+N,m-h+N+1,\ldots,m+N-1\}.
+\end{equation}
+This is the full interval $\{0,\ldots,(n+1)N\}$ with a block of $N$ consecutive integers deleted, and $|E|=m$.
+
+Let $\zeta$ be a primitive $q$th root of unity. For $0\le b\le N$, set
+\[
+ E_b=\{e\in E:e\equiv b\pmod q\},\qquad k_b=|E_b|.
+\]
+Define the $m\times m$ confluent matrix $C_E$ with rows $e\in E$, one exceptional column, and columns $(j,s)$ for $1\le j\le N$, $0\le s<n$:
+\[
+ C_E(e;\star)=1,\qquad C_E(e;(j,s))=e^s\zeta^{je}.
+\]
+The repeated-variable bialternant formula for Schur polynomials \cite{GonzalezMaximenko} gives an exact equivalence between the determinant controlling $B$ and $\det C_E$. The confluent Vandermonde denominator is nonzero because $1,\zeta,\ldots,\zeta^N$ are distinct.
+
+\subsection{Normalized Fourier separation}
+Let
+\[
+ F^+=(\zeta^{jc})_{0\le c,j\le N},\qquad
+ V^+=(\zeta^{jc})_{\substack{0\le c<N\\1\le j\le N}}.
+\]
+Their inverses are
+\[
+ T_0=(F^+)^{-1}=\frac1q(\zeta^{-jc})_{0\le j,c\le N},
+\]
+and
+\[
+ T_{\mathrm{reg}}=(V^+)^{-1}
+ =\frac1q(\zeta^{-jb}-\zeta^{-jN})_{\substack{1\le j\le N\\0\le b<N}}.
+\]
+At derivative level zero, multiply by $T_0$; at levels $1,\ldots,n-1$, multiply by $T_{\mathrm{reg}}$. If $e\equiv b<N$, the transformed row is supported only in block $b$ and equals $(1,e,\ldots,e^{n-1})$. If $e\equiv N$, the row has $1$ in the exceptional column and $(0,-e,\ldots,-e^{n-1})$ in every regular block.
+
+\begin{theorem}[Residual interpolation reduction]\label{thm:residual-reduction}
+If $k_b>n$ for some $b<N$, then $B_{q,r,t}$ is singular. Assume $k_b\le n$ for every $b<N$. Put
+\[
+ w_b(x)=\prod_{e\in E_b}(x-e),\qquad d_b=n-k_b\quad(b<N).
+\]
+Then $1\le k_N\le n$ and
+\begin{equation}\label{eq:dimension-R}
+ \sum_{b<N}d_b=k_N-1.
+\end{equation}
+Let $R_{q,n,t}$ be the $k_N\times k_N$ matrix with rows $x\in E_N$, one distinguished column $\star$, and columns $(b,j)$ for $b<N$, $0\le j<d_b$, defined by
+\begin{align}
+ R(x;\star)&=1,\label{eq:Rstar-main}\\
+ R(x;(b,j))&=p_{b,j}(0)-p_{b,j}(x),
+ \qquad p_{b,j}(x)=w_b(x)x^j.\label{eq:Rcols-main}
+\end{align}
+Then
+\begin{equation}\label{eq:B-R-main}
+ \det B_{q,r,t}=0\quad\Longleftrightarrow\quad\det R_{q,n,t}=0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Rows in a fixed regular class $E_b$ lie in a block of dimension $n$, so $k_b>n$ forces dependence. Otherwise, in block $b$ replace the monomial basis by Lagrange interpolation polynomials on $E_b$, followed by $w_b,xw_b,\ldots,x^{d_b-1}w_b$. The change is invertible because the evaluation determinant contains the nonzero Vandermonde product on the distinct nodes of $E_b$. The regular rows become identity blocks. Eliminating their entries from rows indexed by $E_N$ leaves exactly \eqref{eq:Rstar-main}--\eqref{eq:Rcols-main}. Finally,
+\[
+ \sum_{b<N}d_b=nN-\sum_{b<N}k_b=nN-(m-k_N)=k_N-1,
+\]
+so the remaining block is square. All operations are invertible, proving \eqref{eq:B-R-main}.
+\end{proof}
+
+\subsection{Coefficient map and exact determinant factor}
+Let $\PP_d=\R[x]_{<d}$. Define
+\begin{equation}\label{eq:Phi-main}
+ \Phi_{q,n,t}:\R\oplus\bigoplus_{b<N}\PP_{d_b}\oplus\PP_{n-k_N}
+ \longrightarrow\PP_n,
+\end{equation}
+by
+\[
+ \Phi(c,(f_b),g)=c+\sum_{b<N}w_bf_b+w_Ng.
+\]
+Let $A_{q,n,t}$ be its coefficient matrix in monomial bases, and put
+\[
+ \Delt_N=\prod_{\substack{x,y\in E_N\\x<y}}(y-x).
+\]
+
+\begin{proposition}[Residual-to-coefficient bridge]\label{prop:R-A-main}
+One has
+\begin{equation}\label{eq:R-A-main}
+ \det R_{q,n,t}=(-1)^{k_N-1}\Delt_N\det A_{q,n,t}.
+\end{equation}
+Hence $R_{q,n,t}$ is nonsingular if and only if $\Phi_{q,n,t}$ is an isomorphism.
+\end{proposition}
+
+\begin{proof}
+Every $P\in\PP_n$ has a unique decomposition $P=S+w_NQ$, with $\deg S<k_N$ and $\deg Q<n-k_N$. The map $P\mapsto((P(x))_{x\in E_N},Q)$ has determinant $\Delt_N$. Applied to $\Phi$, its matrix is block lower triangular. Replacing each nonconstant evaluation column $p(x)$ by $p(0)\1-p(x)$ contributes $(-1)^{k_N-1}$ and produces $R$.
+\end{proof}
+
+The complete multiplicative comparison can also be retained. Order rows increasingly within residue classes and let $\varepsilon_{\mathrm{row}}$ be the sign of the permutation from increasing order on $E$ to residue order. Put
+\[
+ \Delta_b=\prod_{\substack{x,y\in E_b\\x<y}}(y-x)
+\]
+and
+\[
+ \varepsilon_{\mathrm{col}}=(-1)^{N(n-1)+(k_N-1)+\sum_{0\le b<c<N}d_bk_c}.
+\]
+Then
+\begin{equation}\label{eq:CE-R-main}
+ \det C_E=\varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
+ \det(F^+)^{-1}\det(V^+)^{-(n-1)}
+ \left(\prod_{b<N}\Delta_b\right)\det R_{q,n,t}.
+\end{equation}
+Every factor outside $\det R$ is nonzero. Thus the residual matrix is not a heuristic surrogate: it controls the same determinant as the original reduced Hoeffding matrix.
+
+\subsection{Complete multiplicative comparison}
+The previous equivalence is sufficient for singularity, but the full scalar can also be written explicitly. Let
+\[
+ y_0=1,\qquad y_j=\zeta^j\ (1\le j\le N),
+ \qquad \mu_0=1,\quad \mu_j=n\ (j\ge1),
+\]
+and define the confluent Vandermonde factor
+\begin{equation}\label{eq:C0-main}
+ \det C_0=
+ \left(\prod_{s=0}^{n-1}s!\right)^N
+ \left(\prod_{j=1}^Ny_j^{n(n-1)/2}\right)
+ \prod_{0\le a<b\le N}(y_b-y_a)^{\mu_a\mu_b}.
+\end{equation}
+It is nonzero because the nodes $y_0,\ldots,y_N$ are distinct.
+
+\begin{theorem}[Exact residual determinant factor]\label{thm:complete-factor}
+With the row and column conventions fixed above,
+\begin{equation}\label{eq:complete-factor-main}
+ \det B_{q,r,t}=
+ (-1)^{N(N+1)/2+Nh}q^{-nN}\varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
+ \frac{\det(F^+)\det(V^+)^{n-1}}
+ {\det C_0\prod_{b<N}\Delta_b}
+ \det R_{q,n,t}.
+\end{equation}
+Every factor multiplying $\det R_{q,n,t}$ is nonzero.
+\end{theorem}
+
+\begin{proof}
+The repeated-variable bialternant expresses the Schur specialization controlling $B$ as $\det C_E/\det C_0$, with the homogeneous sign and the scale factor $q^{-nN}$. Passing from cluster-ordered derivative columns to derivative-level order, applying the normalized Fourier inverses, reordering rows by residue, replacing each regular monomial block by its Lagrange-plus-null-polynomial basis, and moving the exceptional residual column to the front gives exactly the signs $\varepsilon_{\mathrm{row}}$, $\varepsilon_{\mathrm{col}}$ and the factors in \eqref{eq:CE-R-main}. Substitution yields \eqref{eq:complete-factor-main}.
+\end{proof}
+
+\begin{remark}
+Tracking \eqref{eq:complete-factor-main} is logically stronger than a chain of rank-preserving heuristics. In particular, a finite-field or symbolic certificate for the terminal determinant proves a statement about the original Hoeffding matrix after multiplication by a displayed nonzero scalar.
+\end{remark}
+
+\begin{example}[Smallest nontrivial residual block]\label{ex:small-residual}
+Take $q=5$, $n=2$, so $N=4$ and $m=9$, and choose $t=8$. Then the deleted block is $\{5,6,7,8\}$ and
+\[
+ E=\{0,1,2,3,4,9,10,11,12\}.
+\]
+The residue sizes are
+\[
+ (k_0,k_1,k_2,k_3,k_4)=(2,2,2,1,2),
+ \qquad(d_0,d_1,d_2,d_3)=(0,0,0,1).
+\]
+Thus $E_4=\{4,9\}$, $w_3(x)=x-3$, and
+\[
+ R_{5,2,8}=
+ \begin{pmatrix}
+ 1&w_3(0)-w_3(4)\\
+ 1&w_3(0)-w_3(9)
+ \end{pmatrix}
+ =\begin{pmatrix}1&-4\\1&-9\end{pmatrix}.
+\]
+Hence $\det R_{5,2,8}=-5\ne0$, and \cref{thm:complete-factor} certifies $\det B_{5,4,8}\ne0$. At the adjacent threshold $t=7$, one obtains $k_0=3>n$, so the capacity obstruction applies; indeed $7$ lies in a carry band.
+\end{example}
+
+\subsection{The capacity obstruction is exactly the band family}
+Put
+\begin{align*}
+ A&=\left\lceil\frac{n+1}{q}\right\rceil,
+ &c&=Aq-(n+1),\\
+ \rho&\equiv(n+1)N-t\pmod q,
+ &0&\le\rho<q.
+\end{align*}
+
+\begin{proposition}[Residue-count formula]\label{prop:residue-count}
+For $0\le b\le N$,
+\begin{equation}\label{eq:kb-main}
+ k_b=n-A+\mathbf1_{\{b\le c\}}+\mathbf1_{\{b=\rho\}}.
+\end{equation}
+A regular overflow $k_b>n$ occurs if and only if $1\le n\le N$ and $t$ lies in the carry-band set \eqref{eq:band-set-main}.
+\end{proposition}
+
+\begin{proof}
+The full interval $\{0,\ldots,(n+1)N\}$ has a direct residue count. The deleted block has length $q-1$ and therefore contains every residue except the residue immediately preceding its first element, which is $\rho$. Subtraction gives \eqref{eq:kb-main}. Overflow requires $A=1$ and both indicators equal one, equivalent to $n\le N$ and the band parametrization.
+\end{proof}
+
+\section{Stable residual determinants}
+\label{sec:stable}
+
+Assume
+\begin{equation}\label{eq:stable-main}
+ n\ge2,\qquad q\ge n+1.
+\end{equation}
+Outside the carry bands, the residual interval contains exactly
+\begin{equation}\label{eq:stable-thresholds-main}
+ \{q-1\}\cup\bigcup_{j=2}^{n}\{jq-n,jq-n+1,\ldots,jq-1\}
+ \cup\{(n+1)q-n\}.
+\end{equation}
+There are $n(n-1)+2$ families.
+
+\subsection{Root-omission normal form}
+For an admissible pair $(p,a_0)$ and $1\le a\le n$, $a\ne a_0$, define
+\begin{equation}\label{eq:Wa-main}
+ \mu_a=\begin{cases}p-1,&a<a_0,\\p,&a>a_0,\end{cases}
+ \qquad
+ W_a(x)=\prod_{\substack{0\le j\le n-1\\j\ne\mu_a}}(x+a-jq).
+\end{equation}
+The admissible pairs are
+\[
+ (n,n),\quad(0,1),\quad 1\le p\le n-1,\ 1\le a_0\le n.
+\]
+Define
+\begin{equation}\label{eq:D-main}
+ D_{n,p,a_0}(q)=
+ \det\bigl([x^k]W_a(x)\bigr)_{\substack{1\le k\le n-1\\1\le a\le n,\ a\ne a_0}}.
+\end{equation}
+
+\begin{theorem}[Exact bridge to $D_{n,p,a_0}$]\label{thm:A-D-main}
+The threshold correspondence is
+\begin{align*}
+ t=q-1&\longleftrightarrow(n,n),\\
+ t=(n+1)q-n&\longleftrightarrow(0,1),\\
+ t=jq-n+s&\longleftrightarrow(n-j+1,s+1),
+ \quad2\le j\le n,\ 0\le s\le n-1.
+\end{align*}
+For the corresponding pair,
+\begin{equation}\label{eq:A-D-main}
+ \det A_{q,n,t}=(-1)^{\binom{n-1}{2}}D_{n,p,a_0}(q).
+\end{equation}
+Therefore
+\begin{equation}\label{eq:B-D-main}
+ \det B_{q,r,t}\ne0\quad\Longleftrightarrow\quad D_{n,p,a_0}(q)\ne0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Formula \eqref{eq:kb-main} shows that outside the bands only the final $n$ residue classes contribute nonconstant generators, with one distinguished class omitted. Reindex by $a=q-b$ and translate the variable. The omitted root equals $p-1$ to the left of $a_0$ and $p$ to the right, giving \eqref{eq:Wa-main}. The coefficient basis becomes $\{1\}\cup\{W_a:a\ne a_0\}$. Reversal from residue order to increasing $a$ contributes $(-1)^{\binom{n-1}{2}}$, while a common affine translation is unitriangular. The nonconstant coefficient block is exactly \eqref{eq:D-main}. Combine with \cref{thm:residual-reduction,prop:R-A-main}.
+\end{proof}
+
+The stepped omitted-root pattern is essential. Arbitrary polynomials obtained by independently omitting roots need not form a basis.
+
+\subsection{Uniform edge families}
+\begin{lemma}[Translates of a monic polynomial]\label{lem:translates-main}
+If $F$ is monic of degree $d$ and $a_1,\ldots,a_d$ are distinct, then
+\[
+ \{1,F(x+a_1),\ldots,F(x+a_d)\}
+\]
+is a basis of $\R[x]_{\le d}$.
+\end{lemma}
+
+\begin{proof}
+For $1\le k\le d$, the coefficient $[x^k]F(x+a)$ is a polynomial in $a$ of degree $d-k$ with nonzero leading coefficient. Reverse the coefficient rows; the determinant is a nonzero scalar multiple of the Vandermonde product of the $a_i$.
+\end{proof}
+
+When $a_0=1$ or $a_0=n$, all omitted roots are equal, so \cref{lem:translates-main} resolves $2n$ families uniformly. The genuinely mixed families satisfy
+\[
+ 1\le p\le n-1,\qquad2\le a_0\le n-1,
+\]
+and number $(n-1)(n-2)$.
+
+\section{Translation modules and a Toeplitz--Pad\'e minor}
+\label{sec:toeplitz}
+
+Fix a mixed family and write $d=n-1$. Define the adjacent cardinal polynomials
+\begin{equation}\label{eq:F-H-main}
+ F(x)=\prod_{\substack{0\le j\le n-1\\j\ne p-1}}(x-jq),
+ \qquad
+ H(x)=\prod_{\substack{0\le j\le n-1\\j\ne p}}(x-jq).
+\end{equation}
+Then $W_a(x)=F(x+a)$ for $a<a_0$ and $W_a(x)=H(x+a)$ for $a>a_0$.
+
+Let $E$ denote unit translation and $\delta=E-I$. Since $F$ is monic of degree $d$, the polynomials
+\[
+ F,\delta F,\ldots,\delta^dF
+\]
+form a basis of $\Q(q)[x]_{\le d}$.
+
+\begin{proposition}[Local translation algebra]\label{prop:translation-main}
+The map
+\[
+ \Theta_F:\Q(q)[y]/(y^{d+1})\longrightarrow\Q(q)[x]_{\le d},
+ \qquad A(y)\longmapsto A(\delta)F,
+\]
+is an isomorphism. Under it, $E$ corresponds to $z=1+y$, and the constant polynomial $1$ corresponds to $y^d/d!$. There is a unique connection jet $C_{n,p,q}(y)$, with $C_{n,p,q}(0)=1$, such that
+\[
+ H=C_{n,p,q}(\delta)F.
+\]
+\end{proposition}
+
+\begin{proof}
+The degree of $\delta^kF$ is $d-k$ and its leading coefficient is the falling factorial $(d)_k$. Hence the images of $1,y,\ldots,y^d$ form a basis. The remaining assertions follow from $E=I+\delta$, $\delta^dF=d!$, and equality of the leading coefficients of $F$ and $H$.
+\end{proof}
+
+Put
+\[
+ L=a_0-1,\qquad R=n-a_0,\qquad L+R=d,
+\]
+and define the truncated jet
+\begin{equation}\label{eq:Kjet-main}
+ K_{n,p,a_0,q}(y)=z^{L+1}C_{n,p,q}(y)
+ =\sum_{s=0}^dh_s(q)y^s\pmod{y^{d+1}},
+\end{equation}
+with $h_s=0$ for $s<0$.
+
+\begin{theorem}[Rectangular Toeplitz--Pad\'e form]\label{thm:toeplitz-main}
+For every mixed family,
+\begin{equation}\label{eq:toeplitz-D-main}
+ D_{n,p,a_0}(q)=(-1)^{\binom d2}\Gamma_d
+ \det\bigl(h_{L+i-j}(q)\bigr)_{0\le i,j<R},
+\end{equation}
+where
+\[
+ \Gamma_d=\prod_{k=0}^{d-1}(d)_k
+ =\prod_{k=0}^{d-1}\frac{d!}{(d-k)!}\ne0.
+\]
+\end{theorem}
+
+\begin{proof}
+Under \cref{prop:translation-main}, the polynomial basis controlling $D$ becomes
+\[
+ \left\{\frac{y^d}{d!}\right\}\cup\{z,\ldots,z^L\}
+ \cup\{z^{L+2}C,\ldots,z^{d+1}C\}.
+\]
+Multiplication by the unit $z^{-1}$ preserves the determinant. Unitriangular changes replace the first translated vectors by $1,y,\ldots,y^{L-1}$ and the remaining vectors by $K,yK,\ldots,y^{R-1}K$. On rows $y^L,\ldots,y^{d-1}$, the residual block is the Toeplitz matrix in \eqref{eq:toeplitz-D-main}. The determinant of $\Theta_F$, with reversed degrees and the normalization of the constant vector, contributes $(-1)^{\binom d2}\Gamma_d$.
+\end{proof}
+
+The vanishing of this minor is a truncated Pad\'e defect: there exist nonzero polynomials $A,B$, with $\deg A<L$ and $\deg B<R$, such that
+\[
+ A(z)+z^{L+1}C_{n,p,q}(z-1)B(z)\equiv0\pmod{(z-1)^d}.
+\]
+This interpretation isolates the uniform problem but does not solve it for arbitrary $d$.
+
+\section{Arithmetic sieve and finite decidability}
+\label{sec:decidability}
+
+\subsection{Constant term}
+\begin{theorem}[Explicit constant term]\label{thm:D0-main}
+For every mixed family,
+\begin{equation}\label{eq:D0-main}
+ D_{n,p,a_0}(0)=(-1)^{\binom d2}
+ \left(\prod_{k=1}^d\binom dk\right)
+ \frac{\prod_{j=1}^{n-1}j!}{(a_0-1)!(n-a_0)!}.
+\end{equation}
+It is independent of $p$ and nonzero. Every integer root $q_0$ of $D_{n,p,a_0}$ divides this explicit integer, so every prime factor of $q_0$ is at most $n-1$.
+\end{theorem}
+
+\begin{proof}
+At $q=0$, each $W_a$ equals $(x+a)^d$. Extract row factors $\binom dk$ from the coefficient matrix; the remaining determinant is the Vandermonde determinant on $\{1,\ldots,n\}\setminus\{a_0\}$. The rational-root divisibility follows from $D(q_0)\equiv D(0)\pmod{q_0}$.
+\end{proof}
+
+\subsection{First coefficient and reflection}
+Write $D(q)=D_0+D_1q+O(q^2)$.
+
+\begin{proposition}[First logarithmic coefficient]\label{prop:D1-main}
+One has
+\begin{equation}\label{eq:D1-main}
+ \frac{D_1}{D_0}=\frac1{n-1}
+ \sum_{i=a_0+1}^{n}\sum_{j=1}^{a_0-1}\frac1{i-j}.
+\end{equation}
+The ratio is independent of $p$.
+\end{proposition}
+
+\begin{proof}
+Differentiate \eqref{eq:Wa-main} at $q=0$. To first order, the Vandermonde node $a$ moves by a multiple of $S-\mu_a$, where $S=0+\cdots+(n-1)$. Contributions from pairs on the same side of $a_0$ cancel because their omitted indices agree. A cross pair $j<a_0<i$ contributes $1/((n-1)(i-j))$.
+\end{proof}
+
+\begin{proposition}[Stable reflection]\label{prop:D-reflection-main}
+The transformation
+\[
+ (p,a_0)\longmapsto(n-p,n+1-a_0)
+\]
+preserves nonvanishing:
+\[
+ D_{n,p,a_0}(q)=\pm D_{n,n-p,n+1-a_0}(q).
+\]
+\end{proposition}
+
+\begin{proof}
+The affine reflection $x\mapsto(n-1)q-(n+1)-x$ reflects the arithmetic root set, exchanges the two sides of $a_0$, and replaces the omitted index by its reflected value. The affine basis change and column reversal contribute only a sign.
+\end{proof}
+
+\subsection{Decision theorem}
+\begin{theorem}[Finite decidability for fixed residual degree]\label{thm:decidable-main}
+For every fixed $n\ge2$, the exhaustion conjecture for all bases and thresholds can be decided by finitely many exact integer computations.
+\end{theorem}
+
+\begin{proof}
+The unstable range $2\le q\le n$ is finite. In the stable range, only the $n(n-1)+2$ families in \eqref{eq:stable-thresholds-main} remain. The edge families are resolved uniformly by \cref{lem:translates-main}. For each mixed family, every positive integer root divides the nonzero integer \eqref{eq:D0-main}. It therefore suffices to evaluate $D$ on finitely many divisors satisfying $q\ge n+1$.
+\end{proof}
+
+\begin{remark}
+Finite decidability is not a proof that the decision is positive for every $n$. It proves termination of an exact procedure for each fixed residual degree.
+\end{remark}
+
+\section{Certified exhaustion through residual degree thirty}
+\label{sec:certification}
+
+\subsection{Stable no-root certificates}
+A prime $\ell$ is a no-root certificate for $D\in\Z[q]$ if
+\[
+ D(u)\not\equiv0\pmod\ell
+ \qquad\text{for every }u\in\F_\ell.
+\]
+Such a certificate excludes every integer root, since an integer root would reduce to a root modulo every prime.
+
+\begin{theorem}[Stable mixed families through $n=30$]\label{thm:stable-certs-main}
+For the $8{,}112$ mixed families with $5\le n\le30$:
+\begin{enumerate}[label=(\roman*)]
+\item $8{,}110$ admit a no-root prime certificate with $\ell\le107$;
+\item the remaining two satisfy
+\[
+ D_{5,1,4}(q)=D_{5,4,2}(q)=48(q+2)(q^2-11q+48),
+\]
+and have no integer root in the stable domain $q\ge6$.
+\end{enumerate}
+Together with exact symbolic formulas for $n=2,3,4$, every stable residual family is nonsingular for $2\le n\le30$.
+\end{theorem}
+
+\begin{proof}
+The frozen CSV contains one row for each mixed family. For every certified row, the independent verifier reconstructs the polynomials $W_a$ over $\F_\ell$, forms the determinant \eqref{eq:D-main} for every $u\in\F_\ell$, and rejects the certificate if any value vanishes. The verifier does not read stored polynomial coefficients or determinant values. The two exceptional rows are checked symbolically. The low-degree mixed determinants are
+\[
+ D_{3,1,2}=D_{3,2,2}=-(q+4),
+\]
+and, for $n=4$ up to reflection,
+\[
+ -5q^2-15q-54,\qquad3(q^2-5q-18),\qquad-(q+6)(q+9).
+\]
+None vanishes in its stable domain.
+\end{proof}
+
+\subsection{Direct unstable audit}
+The unstable range $2\le q\le n$ is finite and does not use the stable normal form.
+
+\begin{proposition}[Complete unstable audit through $n=30$]\label{prop:unstable-main}
+In the domain
+\[
+ 2\le n\le30,\qquad2\le q\le n,
+ \qquad1\le t\le(n+2)(q-1),
+\]
+there are $112{,}375$ nonconstant parameter triples. Exactly $8{,}225$ are predicted singular by strict boundary or self-duality. Every other one of the $104{,}150$ matrices has nonzero determinant modulo $1{,}000{,}000{,}007$ and is therefore nonsingular over $\Z$.
+\end{proposition}
+
+\begin{proof}
+The checker builds $c_{q,n}$ by modular convolution and forms \eqref{eq:Bdef-main}. Independently, it reconstructs each entry from the second mixed difference of the digit-sum tail count; the two routes must agree entry by entry. Modular Gaussian elimination determines determinant status. Since $n>N$ in this domain, carry bands are empty. The archived run reports zero reconstruction mismatches and zero coverage mismatches.
+\end{proof}
+
+\input{generated/computational_counts.tex}
+
+\subsection{Proof of the main theorem}
+\begin{theorem}[Exhaustion through thirty residual degrees]\label{thm:exhaustion-main}
+For every $2\le n\le30$, $q\ge2$, and nonconstant threshold $t$,
+\[
+ \det B_{q,n+2,t}=0\quad\Longleftrightarrow\quad t\in\Sing_{q,n+2}.
+\]
+\end{theorem}
+
+\begin{proof}
+Membership in $\Sing_{q,r}$ implies singularity by \cref{thm:boundary,thm:bands,prop:selfdual}. If $q\ge n+1$, \cref{thm:stable-certs-main} proves nonvanishing for every residual family outside the bands through the exact chain
+\[
+ B\longleftrightarrow R\longleftrightarrow A\longleftrightarrow D.
+\]
+If $2\le q\le n$, \cref{prop:unstable-main} covers every threshold directly. These cases exhaust all bases.
+\end{proof}
+
+\begin{remark}
+The infinite range $q\ge n+1$ is not proved by truncating the base. A no-root prime certificate excludes integer roots for all $q$ simultaneously. Direct enumeration is used only in the finite range $q\le n\le30$.
+\end{remark}
+
+\section{Reproducibility and proof architecture}
+\label{sec:reproducibility}
+
+The accompanying repository has three exact verification layers.
+
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{Stable generator and independent verifier.} The generator searches for no-root primes. The frozen archive is then checked by a separate program that reconstructs each determinant over finite fields. Byte-for-byte regeneration of the CSV is required.
+\item \textbf{Symbolic audit and tests.} Python/SymPy code verifies the low-degree formulas, the two exceptional factorizations, constant-term and first-coefficient identities in exact test ranges, reflection, and the Toeplitz determinant identity on exact instances.
+\item \textbf{Unstable direct checker.} A C++17 program reconstructs every unstable matrix by two independent formulas and computes determinants modulo a prime.
+\end{enumerate}
+
+The code is organized so that generation and checking are separated. The independent checker does not import or call the certificate generator. All production checks use integers, exact rationals, or finite fields. The released command
+\begin{verbatim}
+./run_all.sh
+\end{verbatim}
+regenerates the certificate archive, compares it with the frozen file, runs all independent checks and tests, regenerates the table included in the article, recompiles the PDF, and verifies the integrity manifest.
+
+\subsection{Role of software in the proof}
+The symbolic theorems reduce the infinite stable problem to finitely many polynomial families for $n\le30$ and the unstable problem to finitely many integer matrices. The software discharges these finite obligations. The main theorem therefore depends on:
+\begin{enumerate}[label=(\alph*)]
+\item the mathematical correctness of the reductions;
+\item the certificate data;
+\item the independent checker implementations;
+\item successful execution in an environment satisfying the declared dependencies.
+\end{enumerate}
+The repository records compiler options, package requirements, exact counts, expected outputs, and SHA-256 hashes.
+
+\section{Limitations and conclusion}
+
+The theorem proved here is broad in the base and threshold but finite in the residual degree. It establishes the exhaustion conjecture for all $q$ and $t$ when $4\le r\le32$. It does not establish the conjecture for arbitrary $r$.
+
+The remaining uniform problem is sharply isolated. For each mixed stable family, singularity is equivalent to vanishing of the Toeplitz--Pad\'e minor in \eqref{eq:toeplitz-D-main}. A proof that these minors never vanish for arbitrary $n$ and integer $q\ge n+1$ would close the stable part uniformly; the unstable part remains finite for every fixed $n$ by \cref{thm:decidable-main}. No such uniform proof is claimed.
+
+The main contribution is therefore not a numerical search bounded in $q$. It is an exact reduction from the original Hoeffding matrix to a finite certificate problem for each fixed residual degree, together with a complete certified execution through degree thirty. The released repository is intended to make the theorem independently reproducible and falsifiable.
+
+\appendix
+
+\section{Certificate archive specification}
+\label{app:certificates}
+
+The frozen CSV contains one row for every mixed family with $5\le n\le30$. Each row records
+\[
+ (n,p,a_0,\texttt{status},\ell).
+\]
+For a standard row, \texttt{status} is \texttt{prime} and $\ell$ is the proposed no-root prime. For the two exceptional rows, \texttt{status} marks symbolic treatment and the prime field is omitted.
+
+The verifier applies the following procedure independently for every standard row:
+\begin{enumerate}[label=\arabic*.]
+\item Validate $5\le n\le30$, $1\le p<n$, and $2\le a_0<n$.
+\item Validate that $\ell$ is prime.
+\item For each $u\in\F_\ell$, reconstruct every polynomial
+\[
+ W_a(x)=\prod_{j\ne\mu_a}(x+a-ju)
+\]
+in $\F_\ell[x]$.
+\item Form the $(n-1)\times(n-1)$ coefficient matrix in \eqref{eq:D-main}.
+\item Compute its determinant by modular elimination and reject if it vanishes.
+\item Reject duplicated or missing parameter rows.
+\end{enumerate}
+Thus a malformed, incomplete, or incorrect archive fails independently of the generator.
+
+\section{Unstable audit specification}
+\label{app:unstable}
+
+For each $(q,n,t)$ in the finite unstable box, the checker computes the coefficient vector of $(1+z+\cdots+z^{q-1})^n$ by repeated modular convolution. The first reconstruction of $\cB$ uses \eqref{eq:Bdef-main} directly. The second uses tail counts
+\[
+ T(u)=\#\{(y_1,\ldots,y_n):y_1+\cdots+y_n\ge u\}
+\]
+and the identity
+\[
+ \cB(i,j)=T(t-i-j-2)-2T(t-i-j-1)+T(t-i-j).
+\]
+The matrices must agree entry by entry. The checker then compares modular determinant status with membership in the predicted singular set. A single reconstruction or coverage mismatch terminates the run with failure.
+
+\section{Small symbolic regression cases}
+\label{app:smallcases}
+
+The test suite includes the following exact regression identities:
+\begin{align*}
+ D_{3,1,2}(q)&=D_{3,2,2}(q)=-(q+4),\\
+ D_{4,1,2}(q)&=-5q^2-15q-54,\\
+ D_{4,1,3}(q)&=3(q^2-5q-18),\\
+ D_{4,2,2}(q)&=-(q+6)(q+9),\\
+ D_{5,1,4}(q)&=D_{5,4,2}(q)=48(q+2)(q^2-11q+48).
+\end{align*}
+It also checks \eqref{eq:D0-main}, \eqref{eq:D1-main}, stable reflection, and the Toeplitz identity in several exact integer specializations. These tests do not replace the proofs; they guard the implementation against indexing, sign, and ordering regressions.
+
+\section*{Code and data availability}
+The complete source-and-certificate repository contains the article source and PDF, C++17 and Python programs, frozen certificates, independent checkers, tests, a single-command reproduction script, citation metadata, and a SHA-256 manifest. The tagged release is the archival version used for the theorem.
+
+\section*{Acknowledgments and disclosure}
+Computational algebra and language-model tools were used for exploratory calculations, code generation, and editorial assistance. No generated output was accepted without exact symbolic or finite-field verification. Mathematical statements, software, and bibliographic claims remain the sole responsibility of the author.
+
+\begin{thebibliography}{10}
+
+\bibitem{Hoeffding}
+W.~Hoeffding,
+A class of statistics with asymptotically normal distribution,
+\emph{Ann. Math. Statist.} \textbf{19} (1948), no.~3, 293--325,
+\href{https://doi.org/10.1214/aoms/1177730196}{doi:10.1214/aoms/1177730196}.
+
+\bibitem{Holte}
+J.~M. Holte,
+Carries, combinatorics, and an amazing matrix,
+\emph{Amer. Math. Monthly} \textbf{104} (1997), no.~2, 138--149,
+\href{https://doi.org/10.1080/00029890.1997.11990612}{doi:10.1080/00029890.1997.11990612}.
+
+\bibitem{DiaconisFulman}
+P.~Diaconis and J.~Fulman,
+Carries, shuffling, and symmetric functions,
+\emph{Adv. in Appl. Math.} \textbf{43} (2009), no.~2, 176--196,
+\href{https://doi.org/10.1016/j.aam.2009.02.002}{doi:10.1016/j.aam.2009.02.002}.
+
+\bibitem{BorodinDiaconisFulman}
+A.~Borodin, P.~Diaconis, and J.~Fulman,
+On adding a list of numbers (and other one-dependent determinantal processes),
+\emph{Bull. Amer. Math. Soc. (N.S.)} \textbf{47} (2010), no.~4, 639--670,
+\href{https://doi.org/10.1090/S0273-0979-2010-01306-9}{doi:10.1090/S0273-0979-2010-01306-9}.
+
+\bibitem{GonzalezMaximenko}
+L.~A. Gonz\'alez-Serrano and E.~A. Maximenko,
+Bialternant formula for Schur polynomials with repeating variables,
+\emph{Linear Multilinear Algebra} \textbf{73} (2025), no.~11, 2613--2647,
+\href{https://doi.org/10.1080/03081087.2025.2464639}{doi:10.1080/03081087.2025.2464639}.
+
+\bibitem{HornJohnson}
+R.~A. Horn and C.~R. Johnson,
+\emph{Matrix Analysis}, 2nd ed., Cambridge University Press, 2013.
+
+\end{thebibliography}
+
+\end{document}

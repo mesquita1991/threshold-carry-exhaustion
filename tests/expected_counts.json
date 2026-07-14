@@ -1,0 +1,11 @@
+{
+  "stable_mixed_families": 8112,
+  "stable_prime_certificates": 8110,
+  "stable_symbolic_exceptions": 2,
+  "maximum_certificate_prime": 107,
+  "unstable_total_triples": 112375,
+  "unstable_predicted_singular": 8225,
+  "unstable_certified_nonsingular": 104150,
+  "unstable_mismatch": 0,
+  "unstable_route_mismatch": 0
+}
