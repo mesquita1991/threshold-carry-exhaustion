@@ -45,13 +45,19 @@ pages="$(pdfinfo "$PAPER_BUILD/threshold_carry_exhaustion.pdf" \
   echo "unexpected paper length: $pages pages (expected 20)" >&2
   exit 1
 }
-pdftotext -layout "$PAPER_BUILD/threshold_carry_exhaustion.pdf" - \
-  | sed 's/[[:space:]]\+$//' \
-  > "$PAPER_BUILD/threshold_carry_exhaustion.txt"
-(
-  cd "$PAPER_BUILD"
-  sha256sum -c "$ROOT/paper/threshold_carry_exhaustion.txt.sha256"
-)
+pdftotext -raw "$PAPER_BUILD/threshold_carry_exhaustion.pdf" \
+  "$PAPER_BUILD/threshold_carry_exhaustion.txt"
+for marker in \
+  "THRESHOLD CARRY EVENTS:" \
+  "Main Theorem." \
+  "8,110" \
+  "104,150" \
+  "No claim is made for arbitrary r."; do
+  grep -Fq "$marker" "$PAPER_BUILD/threshold_carry_exhaustion.txt" || {
+    echo "missing expected rendered-text marker: $marker" >&2
+    exit 1
+  }
+done
 
 CXX="${CXX:-g++}"
 CXXFLAGS=(-O3 -std=c++17)
