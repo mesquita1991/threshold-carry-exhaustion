@@ -1,291 +1,701 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Threshold Carry Events — Certified Exhaustion</title>
-  <meta name="description" content="A reproducible computer-assisted theorem on singularities of threshold carry Hoeffding matrices for every base q ≥ 2, every threshold, and 4 ≤ r ≤ 32.">
-  <meta name="author" content="Vinicius Pereira de Mesquita">
-  <meta name="theme-color" content="#0b1020">
-  <link rel="canonical" href="https://mesquita1991.github.io/threshold-carry-exhaustion/">
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="manifest" href="./site.webmanifest">
-  <link rel="stylesheet" href="./styles.css">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Threshold Carry Events — Certified Exhaustion">
-  <meta property="og:description" content="Exact residual-determinant reduction and certified exhaustion for four to thirty-two summands.">
-  <meta property="og:url" content="https://mesquita1991.github.io/threshold-carry-exhaustion/">
-  <meta property="og:image" content="https://mesquita1991.github.io/threshold-carry-exhaustion/social-card.svg">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="description" content="Pedagogical landing page for the certified exhaustion of singularities in threshold carry Hoeffding matrices for 4 ≤ r ≤ 32." />
+  <meta name="theme-color" content="#0b1020" />
+  <meta property="og:title" content="Threshold Carry Events — Certified Exhaustion" />
+  <meta property="og:description" content="Paper, proof map, exact certificates, and independent verification for 4 ≤ r ≤ 32." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="social-card.svg" />
+  <meta property="og:url" content="https://mesquita1991.github.io/threshold-carry-exhaustion/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="site.webmanifest" />
+  <style>
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #eef2ff;
+  --surface-3: #dbe7ff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: rgba(15, 23, 42, 0.12);
+  --accent: #2563eb;
+  --accent-2: #7c3aed;
+  --accent-3: #0ea5e9;
+  --shadow: 0 20px 60px rgba(28, 35, 62, 0.12);
+  --shadow-soft: 0 10px 30px rgba(28, 35, 62, 0.09);
+  --radius: 22px;
+  --radius-sm: 16px;
+  --container: 1180px;
+}
+
+html[data-theme="dark"] {
+  --bg: #07111f;
+  --surface: #0d1728;
+  --surface-2: #11203a;
+  --surface-3: #1a2f52;
+  --text: #e7edf8;
+  --muted: #b4c0d4;
+  --border: rgba(226, 232, 240, 0.11);
+  --accent: #60a5fa;
+  --accent-2: #a78bfa;
+  --accent-3: #22d3ee;
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  --shadow-soft: 0 15px 35px rgba(0, 0, 0, 0.24);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(37,99,235,0.08), transparent 30%),
+    radial-gradient(circle at top right, rgba(124,58,237,0.08), transparent 35%),
+    var(--bg);
+  color: var(--text);
+}
+
+a { color: inherit; text-decoration: none; }
+img, svg { max-width: 100%; display: block; }
+button { font: inherit; }
+code, pre { font-family: "SFMono-Regular", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+.skip-link {
+  position: absolute; left: 1rem; top: -3rem; background: var(--accent); color: white;
+  padding: .75rem 1rem; border-radius: 12px; z-index: 1000;
+}
+.skip-link:focus { top: 1rem; }
+
+.container { width: min(calc(100% - 2rem), var(--container)); margin: 0 auto; }
+.section { padding: 5rem 0; }
+.section.alt { background: linear-gradient(180deg, transparent, rgba(127, 140, 170, 0.06), transparent); }
+.section-heading { max-width: 760px; margin-bottom: 2rem; }
+.section-heading.compact { margin-bottom: 1.25rem; }
+.eyebrow {
+  text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 700;
+  color: var(--accent); margin: 0 0 .5rem;
+}
+.section-heading h2, .hero-copy h1 { margin: 0 0 .75rem; line-height: 1.1; }
+.section-heading p, .lead, .muted { color: var(--muted); }
+.small { font-size: .92rem; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(18px);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+.header-row { display: flex; align-items: center; gap: 1.25rem; padding: .9rem 0; }
+.brand { display: flex; align-items: center; gap: .85rem; min-width: 0; }
+.brand strong { display: block; }
+.brand small { display: block; color: var(--muted); }
+.brand-mark {
+  width: 2.75rem; height: 2.75rem; border-radius: 14px; display: grid; place-items: center;
+  color: white; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: var(--shadow-soft);
+}
+.main-nav { display: flex; gap: 1rem; margin-left: auto; }
+.main-nav a { padding: .55rem .8rem; border-radius: 999px; color: var(--muted); }
+.main-nav a:hover, .main-nav a:focus-visible { background: var(--surface-2); color: var(--text); }
+.header-actions { display: flex; gap: .7rem; align-items: center; }
+
+.button, .icon-button {
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  border-radius: 999px; padding: .78rem 1rem; cursor: pointer; transition: .2s ease;
+  box-shadow: var(--shadow-soft);
+}
+.button:hover, .icon-button:hover, .button:focus-visible, .icon-button:focus-visible { transform: translateY(-1px); }
+.button.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; border-color: transparent;
+}
+.button.ghost { background: transparent; }
+.icon-button { padding-inline: .9rem; }
+
+.hero-grid, .two-col, .footer-grid { display: grid; gap: 2rem; }
+.hero-grid { grid-template-columns: 1.15fr .95fr; align-items: center; }
+.hero-copy h1 { font-size: clamp(2.2rem, 5vw, 4.3rem); }
+.lead { font-size: 1.08rem; max-width: 62ch; }
+.cta-row { display: flex; flex-wrap: wrap; gap: .8rem; margin: 1.4rem 0 1.6rem; }
+.hero-facts {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; margin: 1.5rem 0 0;
+}
+.hero-facts div {
+  background: color-mix(in srgb, var(--surface) 88%, transparent); padding: 1rem; border-radius: 18px;
+  border: 1px solid var(--border); box-shadow: var(--shadow-soft);
+}
+.hero-facts dt { color: var(--muted); font-size: .86rem; }
+.hero-facts dd { margin: .25rem 0 0; font-weight: 800; font-size: 1.05rem; }
+
+.panel {
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+.glow-panel { position: relative; overflow: hidden; }
+.glow-panel::before {
+  content: ""; position: absolute; inset: -30% auto auto -10%; width: 40%; aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(96,165,250,0.25), transparent 60%);
+  pointer-events: none;
+}
+.panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; color: var(--muted); }
+.status { font-size: .84rem; padding: .35rem .6rem; border-radius: 999px; border: 1px solid var(--border); }
+.status.ok { background: rgba(16, 185, 129, 0.12); color: #059669; }
+.hero-svg { border-radius: 18px; }
+.svg-title { font-size: 2rem; font-weight: 800; fill: white; }
+.svg-sub, .svg-note, .svg-caption { fill: var(--text); font-size: 14px; }
+.svg-caption { font-weight: 600; }
+
+.audience-band { padding-top: 0; }
+.audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.audience-card {
+  padding: 1.2rem; border-radius: 20px; background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; transition: .2s ease; box-shadow: var(--shadow-soft);
+}
+.audience-card.active, .audience-card:hover {
+  transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: 0 18px 40px rgba(37, 99, 235, .16);
+}
+.audience-card h3 { margin: 0 0 .35rem; }
+.audience-card ul { padding-left: 1.1rem; margin: .8rem 0 0; color: var(--muted); }
+
+.math-card .big-formula { font-size: 1.1rem; margin: 1rem 0; }
+.pill-row { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+.pill {
+  padding: .5rem .8rem; border-radius: 999px; background: var(--surface-2); color: var(--muted);
+  border: 1px solid var(--border); font-size: .9rem;
+}
+.stat-stack h3 { margin-top: 0; }
+.stat-list { display: grid; gap: .95rem; }
+.stat {
+  display: flex; align-items: baseline; gap: .8rem; padding: .85rem .95rem; border-radius: 18px;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.stat .num { font-weight: 800; font-size: 1.35rem; }
+.stat .label { color: var(--muted); }
+
+.steps-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+}
+.step-card {
+  position: relative; padding: 1.2rem 1.1rem 1.1rem 1.1rem; border-radius: 20px; background: var(--surface);
+  border: 1px solid var(--border); box-shadow: var(--shadow-soft);
+}
+.step-card h3 { margin-top: .5rem; margin-bottom: .45rem; }
+.step-index {
+  width: 2.2rem; height: 2.2rem; display: grid; place-items: center; border-radius: 999px; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white;
+}
+
+.tabs { display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 1rem; }
+.tab {
+  border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+  border-radius: 999px; padding: .75rem 1rem; cursor: pointer;
+}
+.tab.active { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; border-color: transparent; }
+.tab-panels { padding: 1.4rem; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.info-grid { display: grid; grid-template-columns: 1.35fr .8fr; gap: 1.2rem; align-items: center; }
+.mini-diagram { display: flex; align-items: center; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+.mini-diagram .box {
+  padding: .95rem 1rem; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); font-weight: 700;
+}
+.mini-diagram .arrow { font-size: 1.6rem; color: var(--accent); font-weight: 800; }
+.count-bars { display: grid; gap: .8rem; }
+.bar-row { display: grid; grid-template-columns: 240px 1fr auto; gap: .9rem; align-items: center; }
+.bar { background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; height: 12px; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.repo-tree pre, .code-block pre {
+  margin: 0; white-space: pre-wrap; background: var(--surface-2); border-radius: 16px; padding: 1rem; border: 1px solid var(--border);
+}
+.checklist { margin: 0; padding-left: 1.25rem; }
+.checklist li { margin: .65rem 0; }
+
+.code-block { position: relative; margin: .9rem 0 1.1rem; }
+.copy-button {
+  position: absolute; right: .75rem; top: .75rem; border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); border-radius: 12px; padding: .45rem .65rem; cursor: pointer;
+}
+.link-grid { display: grid; gap: .9rem; }
+.link-card {
+  display: block; padding: 1rem 1.05rem; border-radius: 18px; border: 1px solid var(--border);
+  background: var(--surface); box-shadow: var(--shadow-soft);
+}
+.link-card strong { display: block; margin-bottom: .25rem; }
+.link-card span { color: var(--muted); }
+.callout p:last-child { margin-bottom: 0; }
+
+.accordion details {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 1rem 1.05rem; margin-bottom: .8rem;
+}
+.accordion summary { cursor: pointer; font-weight: 700; }
+.accordion p { color: var(--muted); margin-bottom: 0; }
+.citation-card .citation-text {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 18px; padding: 1rem;
+}
+
+.site-footer { border-top: 1px solid var(--border); padding: 2rem 0 3rem; }
+.footer-grid { grid-template-columns: 1.2fr .8fr .6fr; align-items: start; }
+.footer-grid a { display: block; margin: .35rem 0; color: var(--muted); }
+
+@media (max-width: 1024px) {
+  .hero-grid, .two-col, .footer-grid, .info-grid { grid-template-columns: 1fr; }
+  .hero-facts { grid-template-columns: repeat(2, 1fr); }
+  .steps-grid { grid-template-columns: repeat(2, 1fr); }
+  .audience-grid { grid-template-columns: 1fr; }
+  .main-nav { display: none; }
+}
+
+@media (max-width: 720px) {
+  .section { padding: 4rem 0; }
+  .header-row { flex-wrap: wrap; }
+  .hero-facts { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .bar-row { grid-template-columns: 1fr; }
+  .cta-row, .pill-row, .tabs { gap: .6rem; }
+}
+
+@media print {
+  .site-header, .header-actions, .copy-button, .cta-row, .tabs, .site-footer { display: none !important; }
+  body { background: white; }
+  .panel, .audience-card, .step-card, .link-card, .accordion details { box-shadow: none; }
+}
+
+</style>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script defer>
+const root = document.documentElement;
+const themeToggle = document.getElementById('theme-toggle');
+const savedTheme = localStorage.getItem('tce-theme');
+if (savedTheme) root.setAttribute('data-theme', savedTheme);
+
+themeToggle?.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('tce-theme', next);
+});
+
+const tabs = [...document.querySelectorAll('.tab')];
+const panels = [...document.querySelectorAll('.tab-panel')];
+tabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    document.getElementById(tab.getAttribute('aria-controls'))?.classList.add('active');
+  });
+});
+
+const audienceCards = [...document.querySelectorAll('.audience-card')];
+const audienceButton = document.getElementById('audience-toggle');
+const cycle = ['visitor', 'mathematician', 'reviewer'];
+let currentIndex = 0;
+
+function setAudience(mode) {
+  audienceCards.forEach(card => card.classList.toggle('active', card.dataset.mode === mode));
+  document.body.setAttribute('data-audience', mode);
+  localStorage.setItem('tce-audience', mode);
+  currentIndex = cycle.indexOf(mode);
+}
+
+const storedAudience = localStorage.getItem('tce-audience');
+if (storedAudience && cycle.includes(storedAudience)) setAudience(storedAudience);
+else setAudience('visitor');
+
+audienceCards.forEach(card => card.addEventListener('click', () => setAudience(card.dataset.mode)));
+audienceButton?.addEventListener('click', () => setAudience(cycle[(currentIndex + 1) % cycle.length]));
+
+[...document.querySelectorAll('[data-copy]')].forEach((element) => {
+  element.addEventListener('click', async () => {
+    const text = element.getAttribute('data-copy');
+    try {
+      await navigator.clipboard.writeText(text);
+      const original = element.textContent;
+      element.textContent = 'Copied';
+      setTimeout(() => { element.textContent = original; }, 1400);
+    } catch {
+      alert('Copy failed.');
+    }
+  });
+});
+
+</script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "ScholarlyArticle",
     "headline": "Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands",
-    "author": {"@type": "Person", "name": "Vinicius Pereira de Mesquita"},
-    "datePublished": "2026-07-14",
-    "version": "1.0.0",
+    "author": [{"@type": "Person", "name": "Vinicius Pereira de Mesquita"}],
+    "description": "A computationally certified exhaustion result for singularities in threshold carry Hoeffding matrices for 4 <= r <= 32.",
     "url": "https://mesquita1991.github.io/threshold-carry-exhaustion/",
-    "codeRepository": "https://github.com/mesquita1991/threshold-carry-exhaustion",
+    "sameAs": [
+      "https://github.com/mesquita1991/threshold-carry-exhaustion",
+      "https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0"
+    ],
     "isAccessibleForFree": true,
-    "keywords": ["Hoeffding decomposition", "carry events", "structured matrices", "computer-assisted proof", "residual determinants"]
+    "creativeWorkStatus": "Published"
   }
   </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-
-  <header class="site-header" id="top">
-    <div class="nav-wrap">
-      <a class="brand" href="#top" aria-label="Threshold Carry Events home">
-        <span class="brand-mark" aria-hidden="true">Σ</span>
-        <span><strong>Threshold Carry Events</strong><small>Certified exhaustion package</small></span>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="#top" aria-label="Back to top">
+        <span class="brand-mark">TC</span>
+        <span>
+          <strong>Threshold Carry Events</strong>
+          <small>Certified exhaustion for 4 ≤ r ≤ 32</small>
+        </span>
       </a>
-      <nav class="desktop-nav" aria-label="Primary navigation">
+      <nav class="main-nav" aria-label="Primary">
         <a href="#result">Result</a>
-        <a href="#architecture">Proof</a>
-        <a href="#verification">Verification</a>
+        <a href="#proof-map">Proof map</a>
+        <a href="#explore">Explore</a>
         <a href="#reproduce">Reproduce</a>
         <a href="#limits">Limits</a>
       </nav>
-      <div class="nav-actions">
-        <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle color theme">
-          <span class="theme-icon" aria-hidden="true">◐</span>
-        </button>
-        <a class="button button-small button-ghost" href="https://github.com/mesquita1991/threshold-carry-exhaustion" target="_blank" rel="noopener">GitHub ↗</a>
+      <div class="header-actions">
+        <button class="button ghost" id="audience-toggle" type="button" aria-pressed="false">Audience mode</button>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle color theme">◐</button>
       </div>
     </div>
   </header>
 
   <main id="main">
-    <section class="hero section-shell">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span> Exact computer-assisted theorem · release v1.0.0</p>
-        <h1>Certified exhaustion of singularities in threshold carry Hoeffding matrices</h1>
-        <p class="hero-lede">
-          An exact reduction from a probabilistic interaction matrix to integer residual determinants,
-          followed by independently checkable finite-field and symbolic certificates.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/download/v1.0.0/Threshold_Carry_Events_Certified_Exhaustion.pdf">Read the paper</a>
-          <a class="button button-secondary" href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0">Open verified release</a>
+    <section class="hero section" id="top">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">A guided mathematical entry point</p>
+          <h1>Threshold carry Hoeffding matrices,<br/>reduced to one exact determinant chain.</h1>
+          <p class="lead">
+            This site presents the main theorem, the proof architecture, the exact computational evidence,
+            and the reproducible software package behind the certified exhaustion of singularities for
+            $4 \le r \le 32$.
+          </p>
+          <div class="cta-row">
+            <a class="button primary" href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0">Read the release</a>
+            <a class="button" href="https://github.com/mesquita1991/threshold-carry-exhaustion">Open repository</a>
+            <a class="button" href="#proof-map">Understand the proof</a>
+          </div>
+          <dl class="hero-facts">
+            <div><dt>Main range</dt><dd>$4 \le r \le 32$</dd></div>
+            <div><dt>Stable families</dt><dd>8,112</dd></div>
+            <div><dt>Instable parameters audited</dt><dd>112,375</dd></div>
+            <div><dt>Independent checkers</dt><dd>2 code paths</dd></div>
+          </dl>
         </div>
-        <ul class="trust-row" aria-label="Project properties">
-          <li>Exact arithmetic</li>
-          <li>Independent checker</li>
-          <li>One-command reproduction</li>
-          <li>Frozen release</li>
-        </ul>
-      </div>
-
-      <aside class="theorem-card" aria-labelledby="theorem-title">
-        <div class="card-kicker">Main theorem</div>
-        <h2 id="theorem-title">Exhaustion for 4 ≤ r ≤ 32</h2>
-        <p>For every base <em>q</em> ≥ 2 and every integer threshold <em>t</em>, singularity occurs exactly in the known structural families:</p>
-        <div class="formula-block" role="img" aria-label="Singular if and only if boundary, carry band, or self-dual">
-          <span>singular</span>
-          <strong>⇔</strong>
-          <span>boundary ∪ carry bands ∪ self-dual</span>
+        <div class="hero-visual panel glow-panel">
+          <div class="panel-head"><span>One-page intuition</span><span class="status ok">verified</span></div>
+          <svg viewBox="0 0 640 440" role="img" aria-label="Schematic of the determinant reduction pipeline" class="hero-svg">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0%" stop-color="var(--accent)" />
+                <stop offset="100%" stop-color="var(--accent-2)" />
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="1">
+                <stop offset="0%" stop-color="var(--surface-2)" />
+                <stop offset="100%" stop-color="var(--surface-3)" />
+              </linearGradient>
+            </defs>
+            <rect x="20" y="20" width="600" height="400" rx="24" fill="url(#g2)" opacity="0.75" />
+            <g font-family="Inter, Arial, sans-serif" text-anchor="middle">
+              <rect x="60" y="70" width="130" height="66" rx="18" fill="url(#g1)" opacity="0.95" />
+              <rect x="250" y="70" width="130" height="66" rx="18" fill="url(#g1)" opacity="0.88" />
+              <rect x="440" y="70" width="130" height="66" rx="18" fill="url(#g1)" opacity="0.82" />
+              <rect x="250" y="250" width="130" height="66" rx="18" fill="url(#g1)" opacity="0.76" />
+              <text x="125" y="104" class="svg-title">B</text>
+              <text x="125" y="123" class="svg-sub">Hoeffding matrix</text>
+              <text x="315" y="104" class="svg-title">R</text>
+              <text x="315" y="123" class="svg-sub">residual matrix</text>
+              <text x="505" y="104" class="svg-title">A</text>
+              <text x="505" y="123" class="svg-sub">coefficient map</text>
+              <text x="315" y="284" class="svg-title">D</text>
+              <text x="315" y="303" class="svg-sub">Toeplitz–Padé minor</text>
+              <path d="M190 103h45" stroke="var(--text)" stroke-width="4" stroke-linecap="round" />
+              <path d="M380 103h45" stroke="var(--text)" stroke-width="4" stroke-linecap="round" />
+              <path d="M315 145v82" stroke="var(--text)" stroke-width="4" stroke-linecap="round" />
+              <polygon points="235,103 225,97 225,109" fill="var(--text)" transform="rotate(180 225 103)"/>
+              <polygon points="425,103 415,97 415,109" fill="var(--text)" transform="rotate(180 415 103)"/>
+              <polygon points="315,227 309,217 321,217" fill="var(--text)"/>
+              <text x="315" y="195" class="svg-note">exact changes of basis + explicit factors</text>
+            </g>
+            <g>
+              <rect x="70" y="350" width="500" height="42" rx="14" fill="var(--surface)" opacity="0.92" />
+              <text x="320" y="376" text-anchor="middle" class="svg-caption">Certified theorem: singularities = borders ∪ carry bands ∪ self-dual thresholds, for every base q ≥ 2 and 4 ≤ r ≤ 32.</text>
+            </g>
+          </svg>
         </div>
-        <p class="card-note">No floating-point arithmetic is used in the certification.</p>
-      </aside>
-    </section>
-
-    <section class="quick-links section-shell" aria-label="Quick access">
-      <a class="quick-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/blob/main/paper/threshold_carry_exhaustion.tex">
-        <span class="quick-icon">01</span><span><strong>Paper source</strong><small>Read the complete LaTeX manuscript</small></span><span>→</span>
-      </a>
-      <a class="quick-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/certificates">
-        <span class="quick-icon">02</span><span><strong>Certificates</strong><small>Inspect the frozen no-root archive</small></span><span>→</span>
-      </a>
-      <a class="quick-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/independent_checker">
-        <span class="quick-icon">03</span><span><strong>Independent checker</strong><small>Review the separate verification routes</small></span><span>→</span>
-      </a>
-    </section>
-
-    <section class="content-section section-shell" id="result">
-      <div class="section-heading">
-        <p class="eyebrow">The mathematical statement</p>
-        <h2>One precise result, with explicit scope</h2>
-        <p>The work classifies singularity for a finite but nontrivial range of summand counts, uniformly in the base and threshold.</p>
-      </div>
-      <div class="two-column">
-        <article class="prose-card">
-          <h3>Object of study</h3>
-          <p>Let <span class="math">B<sub>q,r,t</sub></span> be the reduced matrix of the second-order Hoeffding interaction associated with the event that the sum of <em>r</em> independent uniform base-<em>q</em> digits is at least <em>t</em>.</p>
-          <p>The classification problem asks for all parameters for which this structured matrix is singular.</p>
-        </article>
-        <article class="prose-card accent-card">
-          <h3>Certified conclusion</h3>
-          <p>For every <span class="math">q ≥ 2</span>, every integer <span class="math">t</span>, and every <span class="math">4 ≤ r ≤ 32</span>, the known boundary, carry-band, and self-dual families exhaust all singularities.</p>
-          <p>The statement is exact and computer-assisted, not numerical.</p>
-        </article>
-      </div>
-      <div class="insight-strip">
-        <span class="insight-label">General mechanism</span>
-        <p>For each fixed residual degree, the infinite problem in the base <em>q</em> reduces to finitely many exact integer computations.</p>
       </div>
     </section>
 
-    <section class="content-section section-shell" id="architecture">
-      <div class="section-heading">
-        <p class="eyebrow">Proof architecture</p>
-        <h2>From probability to a certified integer determinant</h2>
-        <p>Every arrow is proved with explicit bases, dimensions, permutations, and nonzero scalar factors.</p>
-      </div>
-
-      <div class="pipeline" aria-label="Proof reduction pipeline">
-        <article class="pipeline-node">
-          <span class="node-symbol">B</span>
-          <div><h3>Hoeffding matrix</h3><p>Original reduced interaction matrix.</p></div>
-        </article>
-        <span class="pipeline-arrow" aria-hidden="true">→</span>
-        <article class="pipeline-node">
-          <span class="node-symbol">F</span>
-          <div><h3>Confluent–Fourier form</h3><p>Structured spectral reduction.</p></div>
-        </article>
-        <span class="pipeline-arrow" aria-hidden="true">→</span>
-        <article class="pipeline-node">
-          <span class="node-symbol">R</span>
-          <div><h3>Residual matrix</h3><p>Interpolation defect isolated.</p></div>
-        </article>
-        <span class="pipeline-arrow" aria-hidden="true">→</span>
-        <article class="pipeline-node">
-          <span class="node-symbol">A</span>
-          <div><h3>Coefficient map</h3><p>Polynomial basis representation.</p></div>
-        </article>
-        <span class="pipeline-arrow" aria-hidden="true">→</span>
-        <article class="pipeline-node final-node">
-          <span class="node-symbol">D</span>
-          <div><h3>Integer polynomial</h3><p><span class="math">D<sub>n,p,a₀</sub>(q)</span>, certified exactly.</p></div>
-        </article>
-      </div>
-
-      <div class="method-grid">
-        <article><span class="method-number">1</span><h3>Structural reduction</h3><p>Determinants are related through exact nonzero factors, so singularity is preserved.</p></article>
-        <article><span class="method-number">2</span><h3>Stable regime</h3><p>For <span class="math">q ≥ n+1</span>, residual determinants become integer polynomials in <em>q</em>.</p></article>
-        <article><span class="method-number">3</span><h3>Finite-field certificates</h3><p>A prime is chosen for each family so that the reduced polynomial has no admissible root.</p></article>
-        <article><span class="method-number">4</span><h3>Unstable regime</h3><p>The remaining finite parameter domain is audited directly using two independent entry constructions.</p></article>
+    <section class="section audience-band">
+      <div class="container">
+        <div class="section-heading compact">
+          <p class="eyebrow">Choose your path</p>
+          <h2>Three guided reading modes</h2>
+        </div>
+        <div class="audience-grid">
+          <article class="audience-card active" data-mode="visitor">
+            <h3>Visitor</h3>
+            <p>Understand the question, the theorem, and why the result matters.</p>
+            <ul>
+              <li>Start with the visual proof map</li>
+              <li>Read the theorem summary</li>
+              <li>Use the glossary-like highlights</li>
+            </ul>
+          </article>
+          <article class="audience-card" data-mode="mathematician">
+            <h3>Mathematician</h3>
+            <p>Jump to the determinant chain, exact reductions, and open frontier.</p>
+            <ul>
+              <li>Focus on sections B→R→A→D</li>
+              <li>Check the exact formulas</li>
+              <li>Inspect the limitations section</li>
+            </ul>
+          </article>
+          <article class="audience-card" data-mode="reviewer">
+            <h3>Reviewer</h3>
+            <p>Audit reproducibility, verification path, and software roles.</p>
+            <ul>
+              <li>Use the review checklist</li>
+              <li>Run the one-command reproduction</li>
+              <li>Compare independent verifiers</li>
+            </ul>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section class="content-section section-shell" id="verification">
-      <div class="section-heading">
-        <p class="eyebrow">Exact verification coverage</p>
-        <h2>A finite audit with explicit counts</h2>
-        <p>The released software reconstructs the theorem's finite obligations from the source definitions.</p>
-      </div>
-      <div class="stats-grid">
-        <article class="stat-card"><strong>8,112</strong><span>stable mixed families</span></article>
-        <article class="stat-card"><strong>8,110</strong><span>finite-field no-root certificates</span></article>
-        <article class="stat-card"><strong>2</strong><span>symbolic exceptional factorizations</span></article>
-        <article class="stat-card"><strong>112,375</strong><span>unstable nonconstant triples</span></article>
-        <article class="stat-card"><strong>8,225</strong><span>predicted singular triples</span></article>
-        <article class="stat-card"><strong>104,150</strong><span>certified nonsingular triples</span></article>
-      </div>
-      <div class="verification-note">
-        <div class="verification-badge">✓</div>
+    <section class="section" id="result">
+      <div class="container two-col">
         <div>
-          <h3>Clean-room GitHub Actions verification passed</h3>
-          <p>The main commit, frozen tag, and release-asset workflow all completed successfully in fresh hosted environments.</p>
-          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/actions" target="_blank" rel="noopener">Inspect workflow history ↗</a>
+          <div class="section-heading">
+            <p class="eyebrow">Main theorem</p>
+            <h2>The result in one statement</h2>
+          </div>
+          <div class="math-card panel">
+            <p>For threshold carry Hoeffding matrices $B_{q,r,t}$, with every base $q\ge 2$, every integer threshold $t$, and every number of summands $4\le r\le 32$, the singular parameters are exactly the union of:</p>
+            <div class="big-formula">$$\text{borders} \;\cup\; \text{carry bands} \;\cup\; \text{self-dual thresholds}. $$</div>
+            <p class="muted">This is a certified exhaustion theorem: no additional singularities occur in that range.</p>
+          </div>
+          <div class="pill-row">
+            <span class="pill">exact arithmetic</span>
+            <span class="pill">explicit determinant identities</span>
+            <span class="pill">reproducible verification</span>
+            <span class="pill">finite decision for fixed r</span>
+          </div>
+        </div>
+        <aside class="panel stat-stack">
+          <h3>What is genuinely established?</h3>
+          <div class="stat-list">
+            <div class="stat"><span class="num">8,225</span><span class="label">predicted singular parameters</span></div>
+            <div class="stat"><span class="num">104,150</span><span class="label">nonsingular unstable parameters certified</span></div>
+            <div class="stat"><span class="num">8,110</span><span class="label">stable certificate families with modular no-root verification</span></div>
+            <div class="stat"><span class="num">2</span><span class="label">exceptional stable families factorized symbolically</span></div>
+          </div>
+          <p class="small muted">The theorem is restricted to $4\le r\le 32$. It does not claim exhaustion for all $r$.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section alt" id="proof-map">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Pedagogical proof architecture</p>
+          <h2>How the argument is organized</h2>
+          <p>The site separates the mathematical core from the computational certification. The argument is easier to audit when read as a pipeline.</p>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card">
+            <span class="step-index">1</span>
+            <h3>Start with $B_{q,r,t}$</h3>
+            <p>The original object is the carry-threshold Hoeffding matrix. Singularities are the main target.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-index">2</span>
+            <h3>Reduce to a residual matrix $R$</h3>
+            <p>Known singular families are peeled away, leaving a residual problem that is algebraically sharper.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-index">3</span>
+            <h3>Move to a coefficient map $A$</h3>
+            <p>Confluent interpolation and Fourier-based changes of basis convert the residual matrix into a coefficient model.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-index">4</span>
+            <h3>Isolate $D_{n,p,a_0}(q)$</h3>
+            <p>The remaining obstruction is encoded by an explicit Toeplitz–Padé-type determinant.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-index">5</span>
+            <h3>Certify stable families</h3>
+            <p>For the stable region, one proves there are no integer roots in the relevant range or factors the symbolic exceptions exactly.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-index">6</span>
+            <h3>Audit unstable families directly</h3>
+            <p>Remaining parameters are checked by exact arithmetic in an independent verification path.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="content-section section-shell" id="reproduce">
-      <div class="section-heading">
-        <p class="eyebrow">Reproducibility</p>
-        <h2>Rebuild and verify everything with one command</h2>
-        <p>The command compiles the independent checkers, regenerates certificates and tables, runs exact audits, rebuilds the paper, and verifies the integrity manifest.</p>
-      </div>
-      <div class="terminal-card">
-        <div class="terminal-bar"><span></span><span></span><span></span><small>GNU/Linux shell</small></div>
-        <pre><code id="reproduction-command">git clone https://github.com/mesquita1991/threshold-carry-exhaustion.git
-cd threshold-carry-exhaustion
-bash ./run_all.sh</code></pre>
-        <button class="copy-button" type="button" data-copy-target="reproduction-command">Copy command</button>
-      </div>
-      <div class="review-path">
-        <article>
-          <span>For readers</span>
-          <h3>Start with the theorem and proof map</h3>
-          <p>Read the abstract, main theorem, reduction theorem, and scientific limitations.</p>
-          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/download/v1.0.0/Threshold_Carry_Events_Certified_Exhaustion.pdf">Open PDF</a>
-        </article>
-        <article>
-          <span>For referees</span>
-          <h3>Audit the logical bridge</h3>
-          <p>Check the exact chain <span class="math">B ↔ R ↔ A ↔ D</span> and compare it with the independent checker.</p>
-          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/independent_checker">Open checker</a>
-        </article>
-        <article>
-          <span>For reproducibility reviewers</span>
-          <h3>Run the frozen release</h3>
-          <p>Use tag <code>v1.0.0</code>, execute the full workflow, and compare the generated counts.</p>
-          <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0">Open release</a>
-        </article>
+    <section class="section" id="explore">
+      <div class="container">
+        <div class="section-heading compact">
+          <p class="eyebrow">Interactive exploration</p>
+          <h2>Explore the result from different angles</h2>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Explore sections">
+          <button class="tab active" type="button" role="tab" aria-selected="true" aria-controls="tab-overview" id="btn-overview">Overview</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-counts" id="btn-counts">Counts</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-structure" id="btn-structure">Repository map</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="tab-review" id="btn-review">Review checklist</button>
+        </div>
+        <div class="tab-panels panel">
+          <section class="tab-panel active" id="tab-overview" role="tabpanel" aria-labelledby="btn-overview">
+            <div class="info-grid">
+              <div>
+                <h3>Why this is not just a brute-force table</h3>
+                <p>The work does not merely compute many cases. Its conceptual step is an exact chain of equivalences that turns an infinite base parameter into a finite decision problem for each fixed $r$.</p>
+              </div>
+              <div class="mini-diagram">
+                <div class="box">infinite in q</div>
+                <div class="arrow">→</div>
+                <div class="box">finite certification for fixed r</div>
+              </div>
+            </div>
+          </section>
+          <section class="tab-panel" id="tab-counts" role="tabpanel" aria-labelledby="btn-counts">
+            <div class="count-bars">
+              <div class="bar-row"><span>Stable certificate families</span><div class="bar"><i style="width:72%"></i></div><strong>8,112</strong></div>
+              <div class="bar-row"><span>Stable modular no-root certificates</span><div class="bar"><i style="width:72%"></i></div><strong>8,110</strong></div>
+              <div class="bar-row"><span>Stable symbolic exceptions</span><div class="bar"><i style="width:2%"></i></div><strong>2</strong></div>
+              <div class="bar-row"><span>Instable parameters audited</span><div class="bar"><i style="width:100%"></i></div><strong>112,375</strong></div>
+              <div class="bar-row"><span>Predicted singular parameters</span><div class="bar"><i style="width:8%"></i></div><strong>8,225</strong></div>
+              <div class="bar-row"><span>Certified nonsingular instable parameters</span><div class="bar"><i style="width:93%"></i></div><strong>104,150</strong></div>
+            </div>
+          </section>
+          <section class="tab-panel" id="tab-structure" role="tabpanel" aria-labelledby="btn-structure">
+            <div class="repo-tree">
+              <pre><code>paper/                manuscript source
+src/                  generation scripts
+certificates/         frozen CSV certificates
+independent_checker/  second verification path
+tests/                sanity checks and expected counts
+MANIFEST.sha256       integrity manifest
+CITATION.cff          citation metadata
+README.md             top-level usage instructions
+run_all.sh            one-command full reproduction</code></pre>
+            </div>
+          </section>
+          <section class="tab-panel" id="tab-review" role="tabpanel" aria-labelledby="btn-review">
+            <ul class="checklist">
+              <li>Read the theorem and limits before the computational details.</li>
+              <li>Trace one sample parameter from $B$ to $D$.</li>
+              <li>Verify the counts in the paper against the generated table.</li>
+              <li>Inspect both verifier implementations.</li>
+              <li>Run <code>bash ./run_all.sh</code> on a clean environment.</li>
+              <li>Compare produced checksums with <code>MANIFEST.sha256</code>.</li>
+            </ul>
+          </section>
+        </div>
       </div>
     </section>
 
-    <section class="content-section section-shell" id="repository-map">
-      <div class="section-heading">
-        <p class="eyebrow">Repository map</p>
-        <h2>Find the relevant object without browsing blindly</h2>
-      </div>
-      <div class="repo-map">
-        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/paper"><code>paper/</code><span>LaTeX manuscript and generated table</span></a>
-        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/src"><code>src/</code><span>certificate and table generators</span></a>
-        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/certificates"><code>certificates/</code><span>frozen stable no-root archive</span></a>
-        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/independent_checker"><code>independent_checker/</code><span>separate stable, unstable, and symbolic audits</span></a>
-        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/tree/main/tests"><code>tests/</code><span>small-case and coverage regressions</span></a>
-        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/blob/main/MANIFEST.sha256"><code>MANIFEST.sha256</code><span>integrity manifest</span></a>
-      </div>
-    </section>
-
-    <section class="content-section section-shell" id="limits">
-      <div class="section-heading">
-        <p class="eyebrow">Scientific limits</p>
-        <h2>What this release does not claim</h2>
-        <p>The boundaries below are part of the theorem statement, not caveats hidden in supplementary material.</p>
-      </div>
-      <div class="limits-grid">
-        <article><span>Not claimed</span><h3>Arbitrary numbers of summands</h3><p>The exhaustion theorem is certified for <span class="math">4 ≤ r ≤ 32</span>, not for all <em>r</em>.</p></article>
-        <article><span>Not claimed</span><h3>Uniform nonvanishing in every residual degree</h3><p>Finite decidability is proved degree by degree; a universal product formula remains open.</p></article>
-        <article><span>Not claimed</span><h3>Deep self-dual corank classification</h3><p>The unresolved deep self-dual rank problem is deliberately excluded from this paper.</p></article>
-        <article><span>Not claimed</span><h3>Parameter-only global inertia formula</h3><p>The release concerns singularity exhaustion, not a complete regional inertia classification.</p></article>
-      </div>
-    </section>
-
-    <section class="content-section section-shell" id="cite">
-      <div class="citation-card">
+    <section class="section alt" id="reproduce">
+      <div class="container two-col">
         <div>
-          <p class="eyebrow">Citation</p>
-          <h2>Cite the frozen release</h2>
-          <p>The repository includes machine-readable citation metadata in <code>CITATION.cff</code>.</p>
+          <div class="section-heading compact">
+            <p class="eyebrow">Reproducibility</p>
+            <h2>How to reproduce the full package</h2>
+          </div>
+          <div class="code-block">
+            <button class="copy-button" data-copy="bash ./run_all.sh">Copy</button>
+            <pre><code>bash ./run_all.sh</code></pre>
+          </div>
+          <p>This single command regenerates the paper table, compiles the verifiers, runs the independent audit paths, and checks the manifest.</p>
+          <div class="link-grid">
+            <a class="link-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0"><strong>Release v1.0.0</strong><span>PDF, checksum, and frozen source bundle</span></a>
+            <a class="link-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/actions/runs/29358349642"><strong>Independent verification run</strong><span>Clean-environment confirmation</span></a>
+            <a class="link-card" href="https://github.com/mesquita1991/threshold-carry-exhaustion/actions/runs/29358351849"><strong>PDF rebuild workflow</strong><span>Artifact-generation audit trail</span></a>
+          </div>
         </div>
-        <div class="citation-code">
-          <pre><code id="citation-text">Mesquita, V. P. (2026). Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands (Version 1.0.0). GitHub.</code></pre>
-          <button class="copy-button" type="button" data-copy-target="citation-text">Copy citation</button>
+        <aside class="panel callout">
+          <h3>Software role in the proof</h3>
+          <p>The code is not ancillary decoration. It freezes the exact certificate families and the exact unstable-case audit used by the theorem. The site therefore treats software verification as part of the mathematical evidence, not as a side note.</p>
+          <p class="small muted">This presentation follows the practical view that computational proofs should expose assumptions, exact artifacts, and verification pathways explicitly.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="limits">
+      <div class="container two-col">
+        <div>
+          <div class="section-heading compact">
+            <p class="eyebrow">Limits and frontier</p>
+            <h2>What this work does not claim</h2>
+          </div>
+          <div class="accordion">
+            <details open>
+              <summary>It does not prove exhaustion for all r.</summary>
+              <p>The theorem is restricted to $4\le r\le 32$.</p>
+            </details>
+            <details>
+              <summary>It does not solve the deep self-dual corank problem uniformly.</summary>
+              <p>The self-dual structure is isolated, but the fully general deep regime remains open.</p>
+            </details>
+            <details>
+              <summary>It does not provide a complete global inertia classification.</summary>
+              <p>Several spectral and inertia questions remain open beyond the certified exhaustion result.</p>
+            </details>
+            <details>
+              <summary>It does not use the later candidate matrix K as part of the main theorem.</summary>
+              <p>The published principal article intentionally excludes that later exploratory line.</p>
+            </details>
+          </div>
         </div>
-        <a class="button button-secondary" href="https://github.com/mesquita1991/threshold-carry-exhaustion/blob/main/CITATION.cff">View CITATION.cff</a>
+        <aside class="panel citation-card">
+          <h3>How to cite</h3>
+          <p class="citation-text">Vinicius Pereira de Mesquita, <em>Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands</em>, release v1.0.0, companion repository and reproducible package.</p>
+          <button class="button" data-copy="Vinicius Pereira de Mesquita, Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands, release v1.0.0.">Copy citation</button>
+        </aside>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="section-shell footer-inner">
-      <div><strong>Threshold Carry Events</strong><p>Exact mathematics, explicit scope, reproducible verification.</p></div>
-      <div class="footer-links">
+    <div class="container footer-grid">
+      <div>
+        <strong>Threshold Carry Events</strong>
+        <p class="small">Pedagogical public interface for the main theorem, proof architecture, and reproducible package.</p>
+      </div>
+      <div>
         <a href="https://github.com/mesquita1991/threshold-carry-exhaustion">Repository</a>
         <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/releases/tag/v1.0.0">Release</a>
-        <a href="#cite">Citation</a>
+        <a href="https://github.com/mesquita1991/threshold-carry-exhaustion/blob/main/paper/threshold_carry_exhaustion.tex">Manuscript source</a>
+      </div>
+      <div>
+        <a href="robots.txt">robots.txt</a>
+        <a href="sitemap.xml">sitemap.xml</a>
         <a href="#top">Back to top ↑</a>
       </div>
     </div>
   </footer>
-
-  <noscript><div class="noscript">This page works without JavaScript. Theme switching and copy buttons require JavaScript.</div></noscript>
-  <script src="./script.js" defer></script>
 </body>
 </html>
