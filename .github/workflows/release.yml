@@ -31,4 +31,8 @@ jobs:
           gh release upload "${{ github.event.release.tag_name }}" \
             Threshold_Carry_Events_Certified_Exhaustion.pdf \
             Threshold_Carry_Events_Certified_Exhaustion.pdf.sha256 \
+            independent_checker/audit_bridge_BRAD_results.json \
+            audit/bridge_correction_patch.tex \
+            audit/bridge_audit_report.md \
+            MANIFEST.sha256 \
             --clobber
