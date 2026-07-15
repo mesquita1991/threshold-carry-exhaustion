@@ -25,7 +25,7 @@ cp "$ROOT/paper/threshold_carry_exhaustion.tex" "$PAPER_TMP/"
 cp "$ROOT/paper/generated/computational_counts.tex" "$PAPER_TMP/generated/"
 (
   cd "$PAPER_TMP"
-  export SOURCE_DATE_EPOCH=1784050033
+  export SOURCE_DATE_EPOCH=1784119897
   export FORCE_SOURCE_DATE=1
   : > "$PAPER_TMP/pdflatex.stdout.log"
   for pass in 1 2 3 4; do
@@ -41,8 +41,8 @@ cp "$PAPER_TMP/threshold_carry_exhaustion.pdf" "$PAPER_BUILD/"
 # byte-identical PDF containers across installations.
 pages="$(pdfinfo "$PAPER_BUILD/threshold_carry_exhaustion.pdf" \
   | awk '/^Pages:/ {print $2}')"
-[[ "$pages" == "20" ]] || {
-  echo "unexpected paper length: $pages pages (expected 20)" >&2
+[[ "$pages" == "24" ]] || {
+  echo "unexpected paper length: $pages pages (expected 24)" >&2
   exit 1
 }
 pdftotext -raw "$PAPER_BUILD/threshold_carry_exhaustion.pdf" \
@@ -52,6 +52,9 @@ for marker in \
   "Main Theorem." \
   "8,110" \
   "104,150" \
+  "Corrected reproducible release v1.0.1" \
+  "Exact residual determinant factor" \
+  "Independent bridge-audit specification" \
   "No claim is made for arbitrary r."; do
   grep -Fq "$marker" "$PAPER_BUILD/threshold_carry_exhaustion.txt" || {
     echo "missing expected rendered-text marker: $marker" >&2
@@ -101,6 +104,11 @@ python3 "$ROOT/independent_checker/verify_symbolic.py" \
   "$LOGS/symbolic_audit_summary.json" \
   | tee "$LOGS/verify_symbolic.log"
 
+python3 "$ROOT/independent_checker/audit_bridge_BRAD.py" \
+  "$LOGS/audit_bridge_BRAD_results.json" \
+  | tee "$LOGS/audit_bridge_BRAD.log"
+cmp "$LOGS/audit_bridge_BRAD_results.json" \
+  "$ROOT/independent_checker/audit_bridge_BRAD_results.json"
 
 (
   cd "$ROOT"
