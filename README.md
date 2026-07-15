@@ -1,10 +1,34 @@
-# Threshold Carry Events: certified exhaustion package
+# Threshold Carry Events: corrected certified-exhaustion package
 
 This repository contains the paper
 
 > **Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands**
 
 and the exact computational supplement used in its main theorem.
+
+## Release v1.0.1 correction
+
+Version `v1.0.1` corrects two multiplicative determinant formulas in the bridge from the confluent matrix `C_E` to the residual matrix `R`.
+
+The correct identities are
+
+```text
+det(C_E)
+  = eps_row eps_col det(F+) det(V+)^(n-1)
+    prod_{b<N} Delta_b det(R),
+```
+
+and the corresponding complete `B`-to-`R` formula has `prod_{b<N} Delta_b` in the numerator. Version `v1.0.0` placed the Fourier determinants on the wrong side in the intermediate formula and placed the Vandermonde product in the denominator of the complete formula.
+
+These printed equalities were false in `v1.0.0`. The singularity equivalence and the main exhaustion theorem are unchanged because all corrected factors are explicit and nonzero.
+
+The paper now includes:
+
+- a complete derivation of `B -> C_E` through a rectangular Schur specialization and the repeated-variable bialternant;
+- an expanded `C_E -> R` Fourier/interpolation reduction with all determinant factors tracked;
+- a table of spaces, bases, and dimensions;
+- an explicit distinction between exact determinant identities and vanishing equivalences;
+- an independent bridge-audit script, frozen JSON output, correction patch, and audit report.
 
 ## Main result
 
@@ -14,13 +38,13 @@ The result is computer-assisted but exact. The symbolic part proves the chain
 
 ```text
 Hoeffding matrix B
-  -> confluent-Fourier matrix
+  -> confluent bialternant matrix C_E
   -> residual interpolation matrix R
   -> coefficient map A
   -> integer polynomial determinant D_{n,p,a0}(q).
 ```
 
-The finite obligations are discharged by frozen finite-field certificates and an independent direct audit. Floating point is not used.
+The finite obligations are discharged by frozen finite-field certificates and an independent direct audit. Floating point is not used in the theorem-producing certificate checks. High-precision complex arithmetic appears only in the bridge regression audit for printed signs and normalization factors.
 
 ## One-command reproduction
 
@@ -29,7 +53,7 @@ Requirements:
 - GNU/Linux or compatible shell;
 - C++17 compiler with OpenMP;
 - Python 3.11+;
-- SymPy 1.14;
+- SymPy 1.14 and mpmath 1.3;
 - `pdflatex` and an AMS LaTeX installation;
 - Poppler utilities (`pdftotext`, `pdfinfo`);
 - `sha256sum`.
@@ -42,14 +66,28 @@ bash ./run_all.sh
 
 The command:
 
-1. rebuilds all executables;
-2. regenerates the stable certificate CSV and compares it byte-for-byte with the frozen archive;
-3. verifies every no-root certificate independently;
-4. reconstructs and checks every unstable parameter by two matrix-entry routes;
-5. runs exact symbolic regression checks and archive-coverage tests;
-6. regenerates the computational table used in the paper;
-7. rebuilds the PDF, verifies its 20-page structure, and checks invariant rendered-text markers for the title, main theorem, certificate counts, and explicit limitation;
-8. verifies `MANIFEST.sha256`.
+1. rebuilds the paper and verifies its 24-page structure and invariant text markers;
+2. rebuilds all executables;
+3. regenerates the stable certificate CSV and compares it byte-for-byte with the frozen archive;
+4. verifies every no-root certificate independently;
+5. reconstructs and checks every unstable parameter by two matrix-entry routes;
+6. runs exact symbolic regression checks and archive-coverage tests;
+7. regenerates the computational table used in the paper;
+8. reruns the independent `B <-> R <-> A <-> D` audit and compares its JSON output with the frozen result;
+9. verifies `MANIFEST.sha256`.
+
+### Bridge-audit coverage
+
+The independent audit records:
+
+- `990` exact `B`-to-`R` zero-equivalence cases;
+- `615` exact `R`-to-`A` determinant identities;
+- `790` exact stable `A`-to-`D` determinant identities;
+- `125` high-precision `B`-to-`C_E` regression cases;
+- `64` high-precision corrected `C_E`-to-`R` factor cases;
+- zero failures in all exact tests.
+
+The numerical confluent tests are not used to prove the general identities. They are regression checks for the printed normalization, while the paper supplies the symbolic proofs.
 
 ### PDF reproducibility note
 
@@ -61,15 +99,16 @@ PDF object streams, producer metadata, line breaking, and embedded font subsets 
 paper/                 LaTeX source and generated computational table
 src/                   certificate generator and table generator
 certificates/          frozen stable no-root certificate archive
-independent_checker/   independent finite-field, unstable, and symbolic checkers
+independent_checker/   certificate checkers and the independent bridge audit
+audit/                 correction patch and human-readable audit report
 tests/                 archive-coverage and regression tests
 MANIFEST.sha256        integrity manifest
-CITATION.cff            citation metadata
-README.md               this file
-run_all.sh              complete reproduction command
+CITATION.cff           citation metadata
+README.md              this file
+run_all.sh             complete reproduction command
 ```
 
-## Exact coverage
+## Exact coverage of the exhaustion theorem
 
 - stable mixed families, `5 <= n <= 30`: **8,112**;
 - no-root prime certificates: **8,110**;
@@ -87,8 +126,8 @@ The repository does **not** claim:
 - a classification of the unresolved deep self-dual corank;
 - a parameter-only global formula for inertia.
 
-For each fixed residual degree, the paper proves finite decidability. The uniform obstacle is the nonvanishing of a family of rectangular Toeplitz-Padé minors in arbitrary degree.
+For each fixed residual degree, the paper proves finite decidability. The uniform obstacle is the nonvanishing of a family of rectangular Toeplitz-Pade minors in arbitrary degree.
 
 ## Citation
 
-Use the metadata in [`CITATION.cff`](CITATION.cff). The tagged release identifies the exact source and certificate set used by the paper; its release assets contain the verified PDF.
+Use the metadata in [`CITATION.cff`](CITATION.cff). The tagged release identifies the exact corrected source, certificate set, audit files, and PDF used by the paper.
