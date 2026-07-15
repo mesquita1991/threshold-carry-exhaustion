@@ -1,12 +1,12 @@
 cff-version: 1.2.0
-message: "If you use this paper or verification package, please cite the article and the archived release."
-title: "Threshold Carry Events: Reproducible Proof Package"
+message: "If you use this paper or verification package, please cite the article and the archived corrected release."
+title: "Threshold Carry Events: Corrected Reproducible Proof Package"
 type: software
 authors:
   - family-names: "Pereira de Mesquita"
     given-names: "Vinicius"
-version: "1.0.0"
-date-released: "2026-07-14"
+version: "1.0.1"
+date-released: "2026-07-15"
 repository-code: "https://github.com/mesquita1991/threshold-carry-exhaustion"
 url: "https://github.com/mesquita1991/threshold-carry-exhaustion"
 keywords:
