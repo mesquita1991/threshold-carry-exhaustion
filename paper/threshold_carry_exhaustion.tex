@@ -19,6 +19,7 @@
 \renewcommand{\arraystretch}{1.12}
 
 \newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
 \newcommand{\Q}{\mathbb Q}
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\F}{\mathbb F}
@@ -48,7 +49,7 @@
 \author{Vinicius Pereira de Mesquita}
 \address{Independent researcher, Brazil}
 \email{mesquita1991@gmail.com}
-\date{Reproducible release, 14 July 2026}
+\date{Corrected reproducible release v1.0.1, 15 July 2026}
 
 \hypersetup{
  pdftitle={Threshold Carry Events: Residual Determinants and Certified Exhaustion for Four to Thirty-Two Summands},
@@ -104,7 +105,7 @@ Component & Status & Output \\
 \midrule
 Difference identity & Symbolic & Explicit integer Hankel-difference matrix $\cB=q^nB$.\\
 Known singular families & Symbolic & Exact boundaries, carry bands, and forced self-duality.\\
-Residual reduction & Symbolic & Exact chain $B\leftrightarrow R\leftrightarrow A$.\\
+Residual reduction & Symbolic & Corrected exact factors and vanishing chain $B\leftrightarrow C_E\leftrightarrow R\leftrightarrow A$.\\
 Stable normal form & Symbolic & Exact bridge $A\leftrightarrow D_{n,p,a_0}(q)$.\\
 Arithmetic sieve & Symbolic & Explicit $D(0)$ and finite decision for fixed $n$.\\
 Stable range, $n\le30$ & Certificates plus symbolic exceptions & All stable residual determinants are nonzero.\\
@@ -308,7 +309,7 @@ By boundary duality it suffices to study the residual interval
  \qquad h=t-N.
 \end{equation}
 
-\subsection{Exponent model}
+\subsection{Exponent model and the exact bridge from $B$ to $C_E$}
 Define
 \begin{equation}\label{eq:E-main}
  E=\{0,1,\ldots,m-h-1\}\cup
@@ -316,15 +317,104 @@ Define
 \end{equation}
 This is the full interval $\{0,\ldots,(n+1)N\}$ with a block of $N$ consecutive integers deleted, and $|E|=m$.
 
-Let $\zeta$ be a primitive $q$th root of unity. For $0\le b\le N$, set
+Let $\zeta$ be a primitive $q$th root of unity and introduce the multiset
+\begin{equation}\label{eq:Y-main}
+ \mathcal Y=\{1\}\cup\bigcup_{j=1}^{N}\{\zeta^j\}^{[n]}.
+\end{equation}
+Thus $\mathcal Y$ has $m=1+nN$ elements counted with multiplicity. For $0\le b\le N$, set
 \[
  E_b=\{e\in E:e\equiv b\pmod q\},\qquad k_b=|E_b|.
 \]
-Define the $m\times m$ confluent matrix $C_E$ with rows $e\in E$, one exceptional column, and columns $(j,s)$ for $1\le j\le N$, $0\le s<n$:
-\[
+Define the $m\times m$ confluent matrix $C_E$ with rows indexed increasingly by $e\in E$, one exceptional column $\star$, and columns $(j,s)$ for $1\le j\le N$, $0\le s<n$:
+\begin{equation}\label{eq:CE-main}
  C_E(e;\star)=1,\qquad C_E(e;(j,s))=e^s\zeta^{je}.
+\end{equation}
+Let $E^{\mathrm{std}}=\{0,\ldots,m-1\}$ and write $C_0=C_{E^{\mathrm{std}}}$.
+
+\begin{lemma}[Hankel determinant as a rectangular Schur specialization]\label{lem:B-Schur-main}
+With $h=t-N$ and $\mathcal Y$ as in \eqref{eq:Y-main},
+\begin{equation}\label{eq:B-Schur-main}
+ \det \cB_{q,r,t}
+ =(-1)^{N(N+1)/2+Nh}s_{(N^h)}(\mathcal Y).
+\end{equation}
+Here $e_a(\mathcal Y)=0$ outside $0\le a\le m$ and $(N^0)$ denotes the empty partition.
+\end{lemma}
+
+\begin{proof}
+The root-of-unity factorization
+\[
+ Q_q(z)=\prod_{j=1}^{N}(1-\zeta^jz)
 \]
-The repeated-variable bialternant formula for Schur polynomials \cite{GonzalezMaximenko} gives an exact equivalence between the determinant controlling $B$ and $\det C_E$. The confluent Vandermonde denominator is nonzero because $1,\zeta,\ldots,\zeta^N$ are distinct.
+gives
+\begin{equation}\label{eq:factor-Y-main}
+ (z-1)Q_q(z)^n=-\prod_{y\in\mathcal Y}(1-yz).
+\end{equation}
+By \eqref{eq:Bdef-main}, $\cB(i,j)$ is the coefficient of $z^{t-1-i-j}$ in the left-hand side of \eqref{eq:factor-Y-main}; hence
+\[
+ \cB(i,j)=(-1)^{t-i-j}e_{t-1-i-j}(\mathcal Y).
+\]
+Factor the row and column signs and reverse the $N$ columns. Since $h=t-N$, the resulting determinant is
+\[
+ \det\bigl(e_{h-i+j}(\mathcal Y)\bigr)_{0\le i,j<N}.
+\]
+The dual Jacobi--Trudi identity identifies this determinant with the Schur polynomial $s_{(N^h)}(\mathcal Y)$. The accumulated sign is $(-1)^{N(N+1)/2+Nh}$.
+\end{proof}
+
+\begin{proposition}[Exact confluent bialternant bridge]\label{prop:B-CE-main}
+One has the exact equality
+\begin{equation}\label{eq:B-CE-main}
+ \det B_{q,r,t}
+ =(-1)^{N(N+1)/2+Nh}q^{-nN}\frac{\det C_E}{\det C_0}.
+\end{equation}
+In particular,
+\[
+ \det B_{q,r,t}=0\quad\Longleftrightarrow\quad\det C_E=0.
+\]
+\end{proposition}
+
+\begin{proof}
+For the rectangular partition $\lambda=(N^h)$ in $m$ variables, the exponent set in the numerator bialternant is
+\[
+ \{\lambda_i+m-i:1\le i\le m\}
+ =\{0,\ldots,m-h-1\}\cup\{m-h+N,\ldots,m+N-1\}=E.
+\]
+The denominator uses the standard exponent set $E^{\mathrm{std}}$. Apply the repeated-variable bialternant formula to the node $1$ with multiplicity one and the nodes $\zeta,\ldots,\zeta^N$ with multiplicity $n$. Ordinary confluent derivatives first give entries of the form
+\[
+ e^{\underline{s}}y^{e-s}.
+\]
+Multiplying the derivative column of order $s$ by $y^s$ and applying the unitriangular Stirling change from falling factorials $e^{\underline{s}}$ to powers $e^s$ converts the numerator and denominator to $C_E$ and $C_0$, respectively. Therefore
+\[
+ s_{(N^h)}(\mathcal Y)=\frac{\det C_E}{\det C_0}.
+\]
+Combine this with \cref{lem:B-Schur-main} and $\det\cB=q^{nN}\det B$. The denominator is nonzero because the confluent nodes $1,\zeta,\ldots,\zeta^N$ are distinct.
+\end{proof}
+
+\subsection{Spaces, bases, dimensions, and logical levels}
+The reduction passes through several square matrices, but their sizes and roles differ. The scalar field is extended from $\R$ to $\C$ only for the Fourier step; singularity over $\R$ is unchanged.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.14\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.29\textwidth}X@{}}
+\toprule
+Object & Domain and codomain & Ordered bases or indices & Dimension statement \\
+\midrule
+$B,\cB$ & $\R^N\to\R^N$ & first-difference coordinates $0,\ldots,N-1$ & square of order $N$ \\
+$C_E$ & $\C^m\to\C^m$ & rows $e\in E$; columns $\star$ and $(j,s)$ & $m=1+nN$ \\
+Fourier-separated model & $\C\oplus\bigoplus_{b<N}\PP_n$ & exceptional constant plus one monomial block $1,x,\ldots,x^{n-1}$ per regular residue & $1+nN=m$ \\
+Regular block $b$ & $\PP_n$ & Lagrange polynomials on $E_b$, then $w_b,xw_b,\ldots,x^{d_b-1}w_b$ & $k_b+d_b=n$ \\
+$R$ & $\C\oplus\bigoplus_{b<N}\PP_{d_b}\to\C^{E_N}$ & $\star$ and $(b,j)$; rows $x\in E_N$ & $1+\sum_{b<N}d_b=k_N$ \\
+$\Phi$ and $A$ & $\R\oplus\bigoplus_{b<N}\PP_{d_b}\oplus\PP_{n-k_N}\to\PP_n$ & monomial bases in every polynomial space & $1+\sum d_b+n-k_N=n$ \\
+Stable $D$ block & coefficient block of $\{W_a:a\ne a_0\}$ & rows $x,x^2,\ldots,x^{n-1}$; columns $a\ne a_0$ & square of order $n-1$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Two logical levels will be kept separate throughout:
+\begin{enumerate}[label=(\roman*)]
+\item an \emph{exact determinant identity} has the form $\det X=\gamma\det Y$ with a displayed scalar $\gamma\ne0$;
+\item a \emph{vanishing equivalence} records only $\det X=0\Longleftrightarrow\det Y=0$.
+\end{enumerate}
+The certificate theorem needs only the second level. Whenever the paper claims the first level, the complete nonzero factor is stated explicitly.
 
 \subsection{Normalized Fourier separation}
 Let
@@ -341,9 +431,17 @@ and
  T_{\mathrm{reg}}=(V^+)^{-1}
  =\frac1q(\zeta^{-jb}-\zeta^{-jN})_{\substack{1\le j\le N\\0\le b<N}}.
 \]
-At derivative level zero, multiply by $T_0$; at levels $1,\ldots,n-1$, multiply by $T_{\mathrm{reg}}$. If $e\equiv b<N$, the transformed row is supported only in block $b$ and equals $(1,e,\ldots,e^{n-1})$. If $e\equiv N$, the row has $1$ in the exceptional column and $(0,-e,\ldots,-e^{n-1})$ in every regular block.
+At derivative level zero, right multiply the columns $\star,(1,0),\ldots,(N,0)$ by $T_0$; at each level $s=1,\ldots,n-1$, right multiply the columns $(1,s),\ldots,(N,s)$ by $T_{\mathrm{reg}}$. If $e\equiv b<N$, the transformed row is supported only in block $b$ and equals
+\[
+ (1,e,\ldots,e^{n-1}).
+\]
+If $e\equiv N$, the transformed row has $1$ in the exceptional column and
+\[
+ (0,-e,\ldots,-e^{n-1})
+\]
+in every regular block. Thus, on a polynomial $p$, the regular part of an $E_N$ row acts as the functional $p(0)-p(e)$.
 
-\begin{theorem}[Residual interpolation reduction]\label{thm:residual-reduction}
+\begin{theorem}[Residual interpolation reduction and exact confluent factor]\label{thm:residual-reduction}
 If $k_b>n$ for some $b<N$, then $B_{q,r,t}$ is singular. Assume $k_b\le n$ for every $b<N$. Put
 \[
  w_b(x)=\prod_{e\in E_b}(x-e),\qquad d_b=n-k_b\quad(b<N).
@@ -358,25 +456,73 @@ Let $R_{q,n,t}$ be the $k_N\times k_N$ matrix with rows $x\in E_N$, one distingu
  R(x;(b,j))&=p_{b,j}(0)-p_{b,j}(x),
  \qquad p_{b,j}(x)=w_b(x)x^j.\label{eq:Rcols-main}
 \end{align}
-Then
+Order rows increasingly within each residue class and let $\varepsilon_{\mathrm{row}}$ be the sign of the permutation from increasing order on $E$ to residue order. Put
+\[
+ \Delta_b=\prod_{\substack{x,y\in E_b\\x<y}}(y-x)
+\]
+and
+\[
+ \varepsilon_{\mathrm{col}}=(-1)^{N(n-1)+(k_N-1)+\sum_{0\le b<c<N}d_bk_c}.
+\]
+Then the exact determinant comparison is
+\begin{equation}\label{eq:CE-R-main}
+ \boxed{\det C_E=\varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
+ \det(F^+)\det(V^+)^{n-1}
+ \left(\prod_{b<N}\Delta_b\right)\det R_{q,n,t}.}
+\end{equation}
+Consequently,
 \begin{equation}\label{eq:B-R-main}
  \det B_{q,r,t}=0\quad\Longleftrightarrow\quad\det R_{q,n,t}=0.
 \end{equation}
 \end{theorem}
 
 \begin{proof}
-Rows in a fixed regular class $E_b$ lie in a block of dimension $n$, so $k_b>n$ forces dependence. Otherwise, in block $b$ replace the monomial basis by Lagrange interpolation polynomials on $E_b$, followed by $w_b,xw_b,\ldots,x^{d_b-1}w_b$. The change is invertible because the evaluation determinant contains the nonzero Vandermonde product on the distinct nodes of $E_b$. The regular rows become identity blocks. Eliminating their entries from rows indexed by $E_N$ leaves exactly \eqref{eq:Rstar-main}--\eqref{eq:Rcols-main}. Finally,
+Rows in a fixed regular residue class $E_b$ lie in a block of dimension $n$. Hence $k_b>n$ forces linear dependence in $C_E$, and therefore singularity of $B$ by \cref{prop:B-CE-main}.
+
+Assume $k_b\le n$ for all $b<N$. The dimension identity is
 \[
- \sum_{b<N}d_b=nN-\sum_{b<N}k_b=nN-(m-k_N)=k_N-1,
+ \sum_{b<N}d_b=nN-\sum_{b<N}k_b=nN-(m-k_N)=k_N-1.
 \]
-so the remaining block is square. All operations are invertible, proving \eqref{eq:B-R-main}.
+Thus the proposed residual matrix is square.
+
+We now track the determinant through the Fourier and interpolation operations. First permute the columns to derivative-level order and apply the Fourier inverses described above. Right multiplication contributes
+\[
+ \det(F^+)^{-1}\det(V^+)^{-(n-1)}
+\]
+to the determinant of the transformed matrix. Reorder the rows by residue class; the corresponding sign is $\varepsilon_{\mathrm{row}}$.
+
+For each regular class $b<N$ and each $e\in E_b$, let
+\[
+ \ell_{b,e}(x)=\prod_{\substack{u\in E_b\\u\ne e}}\frac{x-u}{e-u}
+\]
+be the Lagrange cardinal polynomial. Replace the monomial basis of the $b$th block by
+\begin{equation}\label{eq:lagrange-null-basis-main}
+ (\ell_{b,e})_{e\in E_b},\quad
+ w_b,xw_b,\ldots,x^{d_b-1}w_b.
+\end{equation}
+This is a basis of $\PP_n$: the first $k_b$ vectors interpolate arbitrary values on $E_b$, while the last $d_b$ vectors span the kernel of evaluation on $E_b$. Relative to the monomial basis, its determinant has absolute value $\Delta_b^{-1}$; the ordering sign is included in $\varepsilon_{\mathrm{col}}$.
+
+In the new basis, the rows indexed by $E_b$ form an identity block. Row elimination then clears those coordinates from every row indexed by $E_N$. On a regular polynomial block, such a row acts by the functional
+\[
+ p\longmapsto p(0)-p(x).
+\]
+Hence the surviving columns $w_bx^j$ give the entries in \eqref{eq:Rcols-main}, and the exceptional column gives \eqref{eq:Rstar-main}. The remaining matrix is block triangular, with identity regular blocks and final block $R_{q,n,t}$.
+
+Combining the row and column signs, the Fourier determinants, and the basis determinants gives
+\[
+ \det R_{q,n,t}
+ =\varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
+ \det C_E\,\det(F^+)^{-1}\det(V^+)^{-(n-1)}
+ \prod_{b<N}\Delta_b^{-1}.
+\]
+Solving for $\det C_E$ yields \eqref{eq:CE-R-main}. Every displayed factor is nonzero, proving \eqref{eq:B-R-main}.
 \end{proof}
 
-\subsection{Coefficient map and exact determinant factor}
+\subsection{Coefficient map and residual-to-coefficient bridge}
 Let $\PP_d=\R[x]_{<d}$. Define
 \begin{equation}\label{eq:Phi-main}
  \Phi_{q,n,t}:\R\oplus\bigoplus_{b<N}\PP_{d_b}\oplus\PP_{n-k_N}
- \longrightarrow\PP_n,
+ \longrightarrow\PP_n
 \end{equation}
 by
 \[
@@ -388,7 +534,7 @@ Let $A_{q,n,t}$ be its coefficient matrix in monomial bases, and put
 \]
 
 \begin{proposition}[Residual-to-coefficient bridge]\label{prop:R-A-main}
-One has
+One has the exact equality
 \begin{equation}\label{eq:R-A-main}
  \det R_{q,n,t}=(-1)^{k_N-1}\Delt_N\det A_{q,n,t}.
 \end{equation}
@@ -396,27 +542,15 @@ Hence $R_{q,n,t}$ is nonsingular if and only if $\Phi_{q,n,t}$ is an isomorphism
 \end{proposition}
 
 \begin{proof}
-Every $P\in\PP_n$ has a unique decomposition $P=S+w_NQ$, with $\deg S<k_N$ and $\deg Q<n-k_N$. The map $P\mapsto((P(x))_{x\in E_N},Q)$ has determinant $\Delt_N$. Applied to $\Phi$, its matrix is block lower triangular. Replacing each nonconstant evaluation column $p(x)$ by $p(0)\1-p(x)$ contributes $(-1)^{k_N-1}$ and produces $R$.
+Every $P\in\PP_n$ has a unique decomposition $P=S+w_NQ$, with $\deg S<k_N$ and $\deg Q<n-k_N$. The map
+\[
+ P\longmapsto\bigl((P(x))_{x\in E_N},Q\bigr)
+\]
+has determinant $\Delt_N$ in the stated monomial and increasing-node conventions. Applied to $\Phi$, its matrix is block lower triangular. Replacing each nonconstant evaluation column $p(x)$ by $p(0)\1-p(x)$ contributes $(-1)^{k_N-1}$ and produces $R$.
 \end{proof}
 
-The complete multiplicative comparison can also be retained. Order rows increasingly within residue classes and let $\varepsilon_{\mathrm{row}}$ be the sign of the permutation from increasing order on $E$ to residue order. Put
-\[
- \Delta_b=\prod_{\substack{x,y\in E_b\\x<y}}(y-x)
-\]
-and
-\[
- \varepsilon_{\mathrm{col}}=(-1)^{N(n-1)+(k_N-1)+\sum_{0\le b<c<N}d_bk_c}.
-\]
-Then
-\begin{equation}\label{eq:CE-R-main}
- \det C_E=\varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
- \det(F^+)^{-1}\det(V^+)^{-(n-1)}
- \left(\prod_{b<N}\Delta_b\right)\det R_{q,n,t}.
-\end{equation}
-Every factor outside $\det R$ is nonzero. Thus the residual matrix is not a heuristic surrogate: it controls the same determinant as the original reduced Hoeffding matrix.
-
-\subsection{Complete multiplicative comparison}
-The previous equivalence is sufficient for singularity, but the full scalar can also be written explicitly. Let
+\subsection{Correct complete multiplicative comparison}
+Let
 \[
  y_0=1,\qquad y_j=\zeta^j\ (1\le j\le N),
  \qquad \mu_0=1,\quad \mu_j=n\ (j\ge1),
@@ -433,22 +567,37 @@ It is nonzero because the nodes $y_0,\ldots,y_N$ are distinct.
 \begin{theorem}[Exact residual determinant factor]\label{thm:complete-factor}
 With the row and column conventions fixed above,
 \begin{equation}\label{eq:complete-factor-main}
- \det B_{q,r,t}=
- (-1)^{N(N+1)/2+Nh}q^{-nN}\varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
- \frac{\det(F^+)\det(V^+)^{n-1}}
- {\det C_0\prod_{b<N}\Delta_b}
+\begin{aligned}
+ \det B_{q,r,t}
+ &=(-1)^{N(N+1)/2+Nh}q^{-nN}
+   \varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}\\
+ &\quad\times
+ \frac{\det(F^+)\det(V^+)^{n-1}
+       \left(\prod_{b<N}\Delta_b\right)}{\det C_0}
  \det R_{q,n,t}.
+\end{aligned}
 \end{equation}
 Every factor multiplying $\det R_{q,n,t}$ is nonzero.
 \end{theorem}
 
 \begin{proof}
-The repeated-variable bialternant expresses the Schur specialization controlling $B$ as $\det C_E/\det C_0$, with the homogeneous sign and the scale factor $q^{-nN}$. Passing from cluster-ordered derivative columns to derivative-level order, applying the normalized Fourier inverses, reordering rows by residue, replacing each regular monomial block by its Lagrange-plus-null-polynomial basis, and moving the exceptional residual column to the front gives exactly the signs $\varepsilon_{\mathrm{row}}$, $\varepsilon_{\mathrm{col}}$ and the factors in \eqref{eq:CE-R-main}. Substitution yields \eqref{eq:complete-factor-main}.
+Substitute the corrected confluent--residual identity \eqref{eq:CE-R-main} into the exact bialternant identity \eqref{eq:B-CE-main}. No vanishing-only argument is used in this composition.
 \end{proof}
 
-\begin{remark}
-Tracking \eqref{eq:complete-factor-main} is logically stronger than a chain of rank-preserving heuristics. In particular, a finite-field or symbolic certificate for the terminal determinant proves a statement about the original Hoeffding matrix after multiplication by a displayed nonzero scalar.
+\begin{remark}[Correction in reproducible release v1.0.1]\label{rem:v101-correction}
+Release v1.0.0 placed $\det(F^+)$ and $\det(V^+)$ on the wrong side of the intermediate $C_E$--$R$ identity and placed $\prod_{b<N}\Delta_b$ in the denominator of the complete $B$--$R$ identity. Those two multiplicative equalities were false as printed. Equations \eqref{eq:CE-R-main} and \eqref{eq:complete-factor-main} are the corrected formulas. The vanishing equivalences and the main exhaustion theorem are unchanged, because the corrected discrepancy consists entirely of displayed nonzero factors.
 \end{remark}
+
+\begin{remark}
+The equality \eqref{eq:complete-factor-main} is stronger than a chain of rank-preserving heuristics. In particular, a finite-field or symbolic certificate for the terminal determinant proves a statement about the original Hoeffding matrix after multiplication by an explicit nonzero scalar. For the theorem of this paper, however, the logically necessary statement is the vanishing chain
+\[
+ \det B=0\Longleftrightarrow\det C_E=0
+ \Longleftrightarrow\det R=0
+ \Longleftrightarrow\det A=0,
+\]
+and, in the stable regime, $\det A=0\Longleftrightarrow D_{n,p,a_0}(q)=0$.
+\end{remark}
+
 
 \begin{example}[Smallest nontrivial residual block]\label{ex:small-residual}
 Take $q=5$, $n=2$, so $N=4$ and $m=9$, and choose $t=8$. Then the deleted block is $\{5,6,7,8\}$ and
@@ -802,6 +951,9 @@ The symbolic theorems reduce the infinite stable problem to finitely many polyno
 \end{enumerate}
 The repository records compiler options, package requirements, exact counts, expected outputs, and SHA-256 hashes.
 
+The corrected release also contains the independent script
+\path{independent_checker/audit_bridge_BRAD.py} and its frozen JSON output.  The script reconstructs the four bridge levels directly from the definitions.  Its exact tests cover $990$ instances of the $B$--$R$ vanishing equivalence, $615$ instances of the $R$--$A$ determinant identity, and $790$ instances of the stable $A$--$D$ identity.  It also performs high-precision confluent checks solely as regression tests for the printed nonzero factors; those numerical checks are not used as proofs.
+
 \section{Limitations and conclusion}
 
 The theorem proved here is broad in the base and threshold but finite in the residual degree. It establishes the exhaustion conjecture for all $q$ and $t$ when $4\le r\le32$. It does not establish the conjecture for arbitrary $r$.
@@ -867,6 +1019,27 @@ The complete source-and-certificate repository contains the article source and P
 
 \section*{Acknowledgments and disclosure}
 Computational algebra and language-model tools were used for exploratory calculations, code generation, and editorial assistance. No generated output was accepted without exact symbolic or finite-field verification. Mathematical statements, software, and bibliographic claims remain the sole responsibility of the author.
+
+
+\section{Independent bridge-audit specification}
+\label{app:bridge-audit}
+
+The correction audit is deliberately separate from the certificate generator.  Starting from the definitions in the paper, the script performs four classes of checks.
+\begin{enumerate}[label=\arabic*.]
+\item It reconstructs the integer matrix $\cB$ and the residual matrix $R$ for all residual thresholds with $2\le q\le10$ and $2\le n\le6$, and compares their zero status in $990$ cases.  Capacity-overflow cases are checked against direct singularity of $\cB$.
+\item Whenever the residual construction is defined, it verifies the exact identity
+\[
+ \det R=(-1)^{k_N-1}\Delta_N\det A
+\]
+in $615$ cases.
+\item In the stable regime, it verifies
+\[
+ \det A=(-1)^{\binom{n-1}{2}}D_{n,p,a_0}(q)
+\]
+in $790$ cases with $2\le n\le7$ and $n+1\le q\le12$.
+\item At $80$ decimal digits, it checks the confluent $B$--$C_E$ identity in $125$ small cases and the corrected $C_E$--$R$ factor in $64$ cases.  This last layer is a regression audit for signs and normalization only; the proof is the symbolic argument in \cref{prop:B-CE-main,thm:residual-reduction}.
+\end{enumerate}
+The frozen output records zero failures in every exact test.  It also stores explicit counterexamples to the two multiplicative formulas printed in release v1.0.0, making the correction itself reproducible and falsifiable.
 
 \begin{thebibliography}{10}
 
