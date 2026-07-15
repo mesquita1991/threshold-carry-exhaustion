@@ -1,0 +1,94 @@
+% Corrected bridge B <-> R <-> A <-> D
+% Intended as replacement/expansion for the determinant-factor passages.
+
+\begin{lemma}[Hankel determinant as a rectangular Schur specialization]
+Let $N=q-1$, $m=nN+1$, $h=t-N$, and let
+\[
+ \mathcal Y=\{1\}\cup\bigcup_{j=1}^{N}\{\zeta^j\}^{[n]}.
+\]
+Then
+\[
+ \det \mathcal B_{q,r,t}
+ =(-1)^{N(N+1)/2+Nh}\,s_{(N^h)}(\mathcal Y).
+\]
+Consequently,
+\[
+ \det B_{q,r,t}
+ =(-1)^{N(N+1)/2+Nh}q^{-nN}
+   \frac{\det C_E}{\det C_0}.
+\]
+\end{lemma}
+
+\begin{proof}
+Since
+\[
+ (z-1)Q_q(z)^n=-\prod_{y\in\mathcal Y}(1-yz),
+\]
+one has
+\[
+ \mathcal B_{q,r,t}(i,j)
+ =(-1)^{t-i-j}e_{t-1-i-j}(\mathcal Y).
+\]
+Factor the row and column signs and reverse the $N$ columns.  With
+$h=t-N$, the resulting determinant is
+\[
+ \det(e_{h-i+j}(\mathcal Y))_{0\le i,j<N}
+ =s_{(N^h)}(\mathcal Y)
+\]
+by the dual Jacobi--Trudi identity.  In the bialternant numerator for
+$\lambda=(N^h)$ in $m$ variables, the exponent set is
+\[
+ E=\{0,\ldots,m-h-1\}\cup\{m-h+N,\ldots,m+N-1\}.
+\]
+Taking the confluent limit at the nodes $1,\zeta,\ldots,\zeta^N$ gives
+$\det C_E/\det C_0$.  Ordinary confluent derivatives first produce
+falling factorials $e^{\underline s}y^{e-s}$; multiplying the derivative
+column of order $s$ by $y^s$ and applying the unitriangular Stirling
+change converts these entries into $e^sy^e$.  This yields exactly the
+stated $C_E$ and the displayed $C_0$.
+\end{proof}
+
+\begin{proposition}[Correct confluent--residual factor]
+With the row and column conventions of the manuscript,
+\[
+ \boxed{
+ \det C_E=
+ \varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
+ \det(F^+)\det(V^+)^{n-1}
+ \left(\prod_{b<N}\Delta_b\right)
+ \det R_{q,n,t}.}
+\]
+\end{proposition}
+
+\begin{proof}
+Right multiplication by the normalized Fourier inverses contributes
+$\det(F^+)^{-1}\det(V^+)^{-(n-1)}$ to the transformed determinant.
+For each regular residue class, replacing the monomial basis by the
+Lagrange-plus-null-polynomial basis contributes $\Delta_b^{-1}$.
+After row elimination and the recorded permutations, the resulting
+matrix has determinant $\det R_{q,n,t}$.  Solving for $\det C_E$ gives
+the displayed formula.
+\end{proof}
+
+\begin{theorem}[Correct complete multiplicative comparison]
+\[
+ \boxed{
+ \det B_{q,r,t}=
+ (-1)^{N(N+1)/2+Nh}q^{-nN}
+ \varepsilon_{\mathrm{row}}\varepsilon_{\mathrm{col}}
+ \frac{\det(F^+)\det(V^+)^{n-1}
+       \left(\prod_{b<N}\Delta_b\right)}{\det C_0}
+ \det R_{q,n,t}.}
+\]
+All factors outside $\det R_{q,n,t}$ are nonzero.
+\end{theorem}
+
+\begin{remark}
+The printed version places $\det(F^+)$ and $\det(V^+)$ on the wrong side
+in the intermediate $C_E$--$R$ formula and places
+$\prod_{b<N}\Delta_b$ in the denominator of the complete formula.
+Those equalities are false as printed.  The vanishing equivalence
+$\det B=0\Longleftrightarrow\det R=0$ remains valid, because it follows
+from invertible operations and is restored by the corrected nonzero
+factor above.
+\end{remark}
